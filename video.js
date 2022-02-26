@@ -192,6 +192,7 @@ function createSupportButton(claim) {
 			doACall("support_create", params);
 			addNotification(`Supported claim with ${amount} LBC`, 5000)
 			support_div.remove()
+			button.disabled = false;
 		};
 
 		tip_button.onclick = () => {
@@ -206,6 +207,7 @@ function createSupportButton(claim) {
 			doACall("support_create", params);
 			addNotification(`Tipped ${amount} LBC`, 5000)
 			support_div.remove()
+			button.disabled = false;
 		};
 
 
