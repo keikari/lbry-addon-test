@@ -57,6 +57,5 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 - can't be installed(categories won't save and need to be reload on restart)
 
 #### Screenshots(So you don't need to install to check it out. Search bar and balance excluded from screenshots)
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859542-061f7b08-ac08-4aef-ba07-2e70af60e0d8.png">)</img>  
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859544-ca4138da-f610-476c-a819-ff6368a1058e.png">)</img>  
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859545-07a1f6e6-ebab-4a8b-82a5-9eb69ac1b1db.png">)</img>  
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859542-061f7b08-ac08-4aef-ba07-2e70af60e0d8.png"> <img width="500px" src="https://user-images.githubusercontent.com/34790748/155859544-ca4138da-f610-476c-a819-ff6368a1058e.png"> 
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859545-07a1f6e6-ebab-4a8b-82a5-9eb69ac1b1db.png">
