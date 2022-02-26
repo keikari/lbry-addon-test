@@ -9,17 +9,19 @@ drawdown https://github.com/adamvleggett/drawdown
 - Copyright (c) 2016 Adam Leggett
 - MIT License
 
-<hr>
+<hr> 
+ 
+#### This includes code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
-Very beta, possibly abandoned project(Done quite some time ago, this repo is just to have some copy of this in somewhere.) Maybe be fun to check out if you have wanted LBRY in your browser.  
-This includes code for simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.  
+Very beta, possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the timne(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)   
+May be fun to check out if you have wanted LBRY in your browser.  
 
 How to use:  
 1. Check that it's not coded to steal all your LBC as soon as you start it
-2. Download repo
+2. Download repo and extract it
 3. Have LBRY desktop app, or just headless lbrynet running
 4. In your Firefox navigate to "about:debugging" -> This Firefox
-5. Click "Load Temporary Add-on..." and select the "manifest.json" from the repo. 
+5. Click "Load Temporary Add-on..." and select the "manifest.json" from where you extraced the repo. 
 6. Done! ~~Entering lbry URL to address bar~~(may work) or in whatever search engine you prefer, should load into page from extension showing channel or content associated with the claim.
 Clicking the icon for add-on also should open new tab
 
@@ -42,8 +44,9 @@ Common features that are missing:
 - comments
 - dislikes(and likes)
 - opening links to new tab may act strange(no search bar)
+- lbry urls in address bar may not work
 - general elegancy of UI
-- general feedback of most actions
+- general feedback from most actions in on add-on(some error messages and support/tip notifications exist)
 
 
 Known issues:
