@@ -34,7 +34,7 @@ Features:
 - purchase content(bit odd, but should work)
 - very basic UI for transaction history(allows unlocking supports/tips and deleting reposts)
 - detailed claim info(can be toggled by clicking the hr(white line) under the claim)
-- can probably open lbry:// urls from address bar(firefox doesn't support this, is bit hacky)(if your browser directs you to LBRY desktop app, you may need to set "network.protocol-handler.expose.lbry: true" in about:config)
+- can probably open lbry:// urls from address bar(firefox doesn't support this, so it's a bit hacky)(if your browser directs you to LBRY desktop app, you may need to set "network.protocol-handler.expose.lbry: true" in about:config, or set the Firefox as the default application for LBRY links) 
 - dark theme?
 - unlock wallet if using headless lbrynet with encrypted wallet(or not to unlock)
 
