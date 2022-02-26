@@ -50,7 +50,7 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 
 
 #### Known issues:
-- pages need to be reloaded after first launch
+- add-on page needs to be reloaded once after first launch
 - notifications get permanent when navigating to new page
 - floating player exists, but isn't that good
 - can't be installed(categories won't save and need to be reload on restart)
