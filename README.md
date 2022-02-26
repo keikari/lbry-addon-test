@@ -33,10 +33,9 @@ Features:
 - delete locally stored blobs
 - purchase content(bit odd, but should work)
 - very basic UI for transaction history(allows unlocking supports/tips and deleting reposts)
-- detailed claim info(can be toggled by clicking the hr(white line) under the claim)
-- can probably open lbry:// urls from address bar(firefox doesn't support this, so it's a bit hacky)(if your browser directs you to LBRY desktop app, you may need to set "network.protocol-handler.expose.lbry: true" in about:config, or set the Firefox as the default application for LBRY links) 
-- dark theme?
-- unlock wallet if using headless lbrynet with encrypted wallet(or not to unlock)
+- detailed claim info(can be toggled by clicking the hr(white line) under the claim)  
+- enter lbry:// url to some search engine to get directed to add-on page. Can also be get to work more directly from address bar, but I couldn't figure why that works on my main machine, but not on windows.  
+- unlock wallet if using headless lbrynet with encrypted wallet(or not to unlock)  
 
 Common features that are missing:
 - creating/editing/deleting claims
