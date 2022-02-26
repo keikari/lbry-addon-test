@@ -12,7 +12,7 @@ drawdown https://github.com/adamvleggett/drawdown
 
 <hr> 
  
-### This includes code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
+### This is code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
 Very beta, possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the time(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)   
 May be fun to check out if you have wanted LBRY in your browser.  
