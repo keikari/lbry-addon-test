@@ -1,0 +1,18 @@
+hr{color: white;}
+#hr_div{padding:2px}
+#claim_list{margin:auto; list-style: none; display:inline}
+#preview_div{position:relative;margin:0px 0px; display: flex;}
+#thumbnail_div img{width:250px; height:140px}
+#channel_thumbnail{width:160px; height:150px}
+.div{border-color:red; border-style:solid}
+a{color:#aaa; width: fit-content; display:inline; position: relative;}
+#preview_info_div,#thumbnail_div{display: inline-block; position:relative}
+#preview_info_div{width:100%; max-height:140px}
+#title, #channel_name, #release_time{margin: 5px 10px;}
+#title{max-height:22px; overflow:hidden} 
+#preview_details_div{position:absolute; display:block; bottom:0; width: 100%}
+#preview_details_div label{display:inline-block;min-width: 80px; margin-left:10px}
+#thumbnail_div{max-width: 250px; max-height:140px}
+#duration_text{position:relative;z-index: 1; float:right; top: -25px; left: -5px; background: #222; color: #fff; padding:2px}
+#repost_text_div{position:relative; background: #111; color:#eee; width: 100%; padding-left: 5px}
+#repost_text_div a{color:#eee;}

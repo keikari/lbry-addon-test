@@ -1,0 +1,56 @@
+<!DOCTYPE html utf-8>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="claim_list.css"></link>
+		<link rel="stylesheet" href="json-viewer.css"></link>
+		<style>
+			*{font-family: arial}
+			body{ background: #222; color: #aaa; padding-top:50px} 
+			.div{ border-color: red; border-style: solid}
+			h1,h2,h3,h4,h5{color: #ddd}
+			#main_div{max-width:1200px; width:90%; margin:auto}
+			video{max-width:1200px; max-height:1000px}
+			#details_div{color: #fff; margin:0px; padding:0 10px; position:relative}
+			#details_div div{display: inline-block; }
+			#right_div{right:0; position: absolute; height:100%}
+			#options_div{margin:10px}
+			#content_div{background:#111; color:#ccc}
+			#info_div{text-align:left; display:inline-block}
+			#description_div a{display:inline-block}
+			#description_div *{margin: 0px}
+			#content_div a{display:inline-block}
+			#content_div *{margin: 0px}
+			#LBC_text{position: absolute; bottom:0; right:5px}
+			#support_div,#repost_div{position: fixed; width:fit-content; margin:auto; left:0; right:0; top:45%; background: #444; padding: 10px} 
+			#repost_div div{margin: 10px 0}
+			#repost_div #bid_input,#repost_name_input{float: right;}
+			.x_button{float:right;}
+			.text_div{ padding: 15px;}
+			#content_div img{ max-width:80%;}
+			#channel_url{color:#ddd}
+			a{color:#eee}
+
+		</style>
+		<script src="json-viewer.js"></script>
+		<script src=util.js></script>
+		<script src=claim_list.js></script>
+		<script src=drawdown.js></script>
+		<script src=video.js></script>
+	</head>
+	<body>
+		<div id="main_div">
+			<div id="content_div">
+			</div>
+			<div id="details_div" class="text_div">
+			</div>
+			<div id="hr_div">
+				<hr>
+			</div>
+			<div id="description_div" class="text_div">
+			</div>
+			<div id="json">
+			</div>
+		</div>
+	</body>
+</html>

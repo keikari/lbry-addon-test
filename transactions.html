@@ -1,0 +1,59 @@
+<!DOCTYPE html utf-8>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<style>
+			*{font-family: arial}
+			body{ background: #222; color: #aaa; padding-top:50px} 
+			div{ border-color: red; border-style: solid}
+			#main_div{max-width:1200px; width:90%; margin:auto}
+			a{color:#eee}
+			#td_lbc{text-align: right}
+			#navigation_div{float: right}
+			#page_input{width:25px}
+
+		</style>
+		<script src="util.js"></script>
+		<script src="transactions.js"></script>
+	</head>
+	<body>
+		<div id="main_div">
+			<div id="options-div">
+				<select id="transaction_type_selector">
+					<option value="all">All</option>
+					<option value="sent">Sent</option>
+					<option value="received">Received</option>
+					<option value="support">Support</option>
+					<option value="channel">Channel</option>
+					<option value="stream">Stream</option>
+					<option value="repost">Repost</option>
+					<option value="collection">Collection</option>
+				</select>
+				<button id="filter_unspent" class="filter_btn" value="is_not_spent">Unspent</button>
+				<button id="filter_spent" class="filter_btn" value="is_spent">Spent</button>
+				<button id="filter_all" class="filter_btn active_filter_btn" >All</button>
+				<div id="navigation_div">
+					<button class="page_btn" id="prev_page_btn"><</button>
+					<input type="text" id="page_input" value=1>
+					<button class="page_btn" id="next_page_btn">></button>
+				</div>
+			</div>
+			<div id="transactions_div">
+				<table id="tx_table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Type</th>
+							<th></th>
+							<th>Details</th>
+							<th>Tx</th>
+							<th>LBC</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
