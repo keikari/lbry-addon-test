@@ -11,7 +11,7 @@ drawdown https://github.com/adamvleggett/drawdown
 
 <hr> 
  
-#### This includes code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
+### This includes code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
 Very beta, possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the timne(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)   
 May be fun to check out if you have wanted LBRY in your browser.  
@@ -25,7 +25,7 @@ How to use:
 6. Done! ~~Entering lbry URL to address bar~~(may work) or in whatever search engine you prefer, should load into page from extension showing channel or content associated with the claim.
 Clicking the icon for add-on also should open new tab
 
-Features:
+#### Features:
 - search
 - advanced search options(can be stored as a "categories")
 - view video, audio, markdown and image files
@@ -39,7 +39,7 @@ Features:
 - enter lbry:// url to some search engine to get directed to add-on page. Can also be get to work more directly from address bar, but I couldn't figure why that works on my main machine, but not on windows.  
 - unlock wallet if using headless lbrynet with encrypted wallet(or not to unlock)  
 
-Common features that are missing:
+#### Common features that are missing:
 - creating/editing/deleting claims
 - comments
 - dislikes(and likes)
@@ -49,7 +49,7 @@ Common features that are missing:
 - general feedback from most actions in on add-on(some error messages and support/tip notifications exist)
 
 
-Known issues:
+#### Known issues:
 - pages need to be reloaded after first launch
 - notifications get permanent when navigating to new page
 - floating player exists, but isn't that good
