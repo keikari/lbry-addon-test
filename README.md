@@ -20,7 +20,7 @@ How to use:
 3. Have LBRY desktop app, or just headless lbrynet running
 4. In your Firefox navigate to "about:debugging" -> This Firefox
 5. Click "Load Temporary Add-on..." and select the "manifest.json" from the repo. 
-6. Done! Entering lbry URL to address bar or in what ever search engine you prefer, should load into page from extension showing channel or content associated with the claim.
+6. Done! ~~Entering lbry URL to address bar~~(may work) or in whatever search engine you prefer, should load into page from extension showing channel or content associated with the claim.
 Clicking the icon for add-on also should open new tab
 
 Features:
