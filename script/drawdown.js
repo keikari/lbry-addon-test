@@ -3,6 +3,8 @@
  * (c) Adam Leggett
  */
 
+/*This file has been edited */
+
 
 ;function markdown(src) {
 
