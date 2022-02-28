@@ -53,31 +53,31 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			window.localStorage.setItem(claim.claim_id, JSON.stringify(claim)); // Decoding from link is necessary
 		}
 		const div = document.createElement("div");
-		div.id = "preview_div"
+		div.classList.add("preview_div");
 		const thumbnail_div = document.createElement("div");
-		thumbnail_div.id = "thumbnail_div";
+		thumbnail_div.classList.add("thumbnail_div");
 		const thumbnail = document.createElement("img");
 		let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
 		thumbnail.src = thumbnail_url;
 		const preview_info_div = document.createElement("div");
-		preview_info_div.id = "preview_info_div";
+		preview_info_div.classList.add("preview_info_div");
 		const title = document.createElement("h3");
-		title.id = "title";
+		title.classList.add("title");
 		title.innerHTML = claim.value.title;
 		let channel_name = null;
 		// Don't print channel name on channel's page
 		if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
 			channel_name = document.createElement("h4");
-			channel_name.id = "channel_name";
+			channel_name.classList.add("channel_name");
 			channel_name.innerHTML = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
 		}
 
 		//Create details div
 		let preview_details_div = document.createElement("div");
-		preview_details_div.id = "preview_details_div";
+		preview_details_div.classList.add("preview_details_div");
 		// Release time
 		let release_text = document.createElement("p");
-		release_text.id = "release_time";
+		release_text.classList.add("release_time");
 		release_text.innerHTML = timeDifference(
 			Math.floor(Date.now()/1000),
 			(claim.value.release_time ? claim.value.release_time : claim.meta.creation_timestamp)
@@ -90,7 +90,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		//Duration and bitrate
 		if (claim.value.stream_type === "video" || claim.value.stream_type == "audio") {
 			var duration_text = document.createElement("label");
-			duration_text.id = "duration_text";
+			duration_text.classList.add("duration_text");
 			var duration = (claim.value.video && claim.value.video.duration ? claim.value.video.duration : 
 				(claim.value.audio && claim.value.audio.duration ? claim.value.audio.duration : 0));
 			let date = new Date(0);
@@ -112,7 +112,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		}
 		//Media type
 		let mime_type_text = document.createElement("label");
-		mime_type_text.id = "mime_type_text";
+		mime_type_text.classList.add("mime_type_text");
 		let claim_mime_type = (claim.value.source ? claim.value.source.media_type : "Unknown");
 		mime_type_text.innerHTML = claim_mime_type;
 		preview_details_div.append(mime_type_text);
@@ -122,7 +122,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			? claim.value.fee.amount 
 			: "Free": "Free");
 		let price_text = document.createElement("label");
-		price_text.id = "price_text";
+		price_text.classList.add("price_text");
 		price_text.innerHTML = (price === "Free" ? "Free" : price + " LBC");
 		price_text.style = "float: right; margin-right: 5px; text-align:right";
 		preview_details_div.append(price_text);
@@ -133,7 +133,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
 			let repost_channel_url = ( repost_claim.signing_channel ? repost_claim.signing_channel.permanent_url : null );
 			let repost_text_div = document.createElement("div");
-			repost_text_div.id = "repost_text_div";
+			repost_text_div.classList.add("repost_text_div");
 			let a = document.createElement("a");
 			if (repost_channel_url)
 				a.href = repost_channel_url;
@@ -151,7 +151,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		// Make cliking hr show/hide the claim JSON
 		const hr_div = document.createElement("div");
 		const hr = document.createElement("hr");
-		hr_div.id = "hr_div";
+		hr_div.classList.add("hr_div");
 		hr_div.addEventListener("click", () => {
 			let json_viewer = ul.querySelector(".json_viewer");
 			if (!json_viewer) {
@@ -178,7 +178,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		if (channel_name && channel_name.innerHTML != "Unknown") {
 			const channel_link = document.createElement("a");
 			channel_link.href = "channel.html?url="+claim.signing_channel.permanent_url;
-			channel_link.id = "channel_url";
+			channel_link.classList.add("channel_url");
 			channel_link.append(channel_name);
 			preview_info_div.append(channel_link);
 		}
