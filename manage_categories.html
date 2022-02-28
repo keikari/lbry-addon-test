@@ -39,6 +39,10 @@
 			<div id="inputs_div">
 				<label for="text">Text</label><br>
 				<input class="get_text" type="text" id="text"><br><br>
+				<label for="name">Name</label><br>
+				<input class="get_text" type="text" id="name"><br><br>
+				<label for="claim_ids">Claim_ids</label><br>
+				<input class="get_text_array" type="text" id="claim_ids"><br><br>
 
 				<label for="channel_ids">Channels (name, LBRY_url, claim_id)</label><br>
 				<input type="text" id="channel_ids"><br><br>
@@ -81,6 +85,7 @@
 					<option value="fee_currency">fee_currency</option>
 					<option value="fee_amount">fee_amount</option>
 					<option value="duration">duration</option>
+					<option value="trending_score">trending_score</option>
 
 				</select><br><br>
 
@@ -106,6 +111,8 @@
 				<input class="get_text_array" type="text" id="all_languages"><br><br>
 
 
+				<label for="remove_duplicates">Remove duplicates</label><br>
+				<input class="get_check_box" type="checkbox" id="remove_duplicates"><br><br>
 				<label for="is_controlling">Only controlling claims</label><br>
 				<input class="get_check_box" type="checkbox" id="is_controlling"><br><br>
 
