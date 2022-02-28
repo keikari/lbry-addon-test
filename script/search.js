@@ -9,10 +9,11 @@ function getClaimTypeFromUrl(lbryUrl) {
 
 function createMostSupported(response, lbry_url) {
 	let claim = response.result[lbry_url];
+	let filtered_txids = JSON.parse(window.localStorage.getItem("filtered_outpoints"));
 	if (claim.value_type === "repost")
 		claim = claim.reposted_claim;
-	if (txidIsFiltered(claim.txid) || (claim.signing_channel ? txidIsFiltered(claim.signing_channel.txid) : false)) {
-		//return;
+	if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
+		return;
 	}
 
 	let data = claim.value;

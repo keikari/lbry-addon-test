@@ -1,63 +1,33 @@
- channel_claim = {};
-let claim_list_search_params = {};
-let filtered_txids = JSON.parse(window.localStorage.getItem("filtered_outpoints"));
 
-function txidIsFiltered(txid) {
-	let L = 0;
-	let R = filtered_txids.length - 1;
-	while (L <= R) {
-		m = Math.floor((L + R) / 2);
-		if ( filtered_txids[m].substr(0, filtered_txids[m].length - 2) < txid ) 
-			L = m + 1;
-		else if ( filtered_txids[m].substr(0, filtered_txids[m].length - 2) > txid )
-			R = m - 1;
-		else
-			return true;
-	}
-	return false;
-
-}
-function createThumbnail(claim){
-		const thumbnail = document.createElement("img");
-		let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
-		thumbnail.src = thumbnail_url;
-		return thumbnail;
-
-}
-
-function sendSearchParams(search_params, _channel_claim) {
-	for (key in search_params)
-		claim_list_search_params[key] = search_params[key];
-	channel_claim = _channel_claim;
-	claim_list_search_params.page = 1;
-	if (!claim_list_search_params.not_tags)
-		claim_list_search_params.not_tags = [];
-	claim_list_search_params.not_tags = claim_list_search_params.not_tags.concat(["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"]);
-	doACall("claim_search", claim_list_search_params, (response) => {
-		addClaimsToList(response, "#claim_list", false);
+function sendSearchParams(search_params, channel_claim) {
+	search_params.page = 1;
+	if (!search_params.not_tags)
+		search_params.not_tags = [];
+	search_params.not_tags = search_params.not_tags.concat(["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"]);
+	doACall("claim_search", search_params, (response) => {
+		addClaimsToList(response, channel_claim, search_params);
 	});
 	window.onscroll = () => {
 		if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-			claim_list_search_params.page++;
-			console.log(claim_list_search_params);
-			doACall("claim_search", claim_list_search_params, (response) => {
+			search_params.page++;
+			doACall("claim_search", search_params, (response) => {
 				// Stop looking for more claims when there aren't any
 				if (response.result.items.length == 0)
 					window.onscroll = null;
-				addClaimsToList(response, "#claim_list", false);
+				addClaimsToList(response, channel_claim, search_params);
 			});
 		}
 	}
 }
 // Channel claim is optional
-function addClaimsToList(obj) {
+function addClaimsToList(obj, channel_claim, search_params) {
 
+	let filtered_txids = JSON.parse(window.localStorage.getItem("filtered_outpoints"));
 	const ul = document.querySelector("#claim_list");
 
 	obj.result["items"].forEach((claim) => {
 		// If using channel filters and signature is invalid, don't show publishes
-		if (claim.signing_channel && (claim_list_search_params.channel_ids || claim_list_search_params.channel) && !claim.is_channel_signature_valid) {
-			console.log("hi");
+		if (claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
 			return;
 		}
 		let reposted = false;
@@ -69,7 +39,7 @@ function addClaimsToList(obj) {
 				return;
 		}
 
-		if (txidIsFiltered(claim.txid) || (claim.signing_channel && claim.signing_channel.txid ? txidIsFiltered(claim.signing_channel.txid) : false)) {
+		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
 			return;
 		}
 		
@@ -86,7 +56,9 @@ function addClaimsToList(obj) {
 		div.id = "preview_div"
 		const thumbnail_div = document.createElement("div");
 		thumbnail_div.id = "thumbnail_div";
-		const thumbnail = createThumbnail(claim);
+		const thumbnail = document.createElement("img");
+		let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
+		thumbnail.src = thumbnail_url;
 		const preview_info_div = document.createElement("div");
 		preview_info_div.id = "preview_info_div";
 		const title = document.createElement("h3");

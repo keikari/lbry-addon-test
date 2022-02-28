@@ -1,4 +1,19 @@
-function addNotification(text, timeout) {
+function itemInArray(item, array) {
+	let L = 0;
+	let R = array.length - 1;
+	while (L <= R) {
+		m = Math.floor((L + R) / 2);
+		if ( array[m].substr(0, array[m].length - 2) < item )
+			L = m + 1;
+		else if ( array[m].substr(0, array[m].length - 2) > item )
+			R = m - 1;
+		else
+			return true;
+	}
+	return false;
+}
+
+ function addNotification(text, timeout) {
 	let notification_list = window.parent.document.querySelector("#notification_list");
 	let notification_item = document.createElement("li");
 	notification_item.classList.add("notification_item");
@@ -51,60 +66,6 @@ function doACall(method, params, callback = (a, b) => {}, kwargs = {}) {
 	}));
 }
 
-
-// Takes  json object as param, will only be stored, other wiser will update the prefrences on lbrynet
-//function applyPreferences(_preferences) {
-//	let localStorage = window.localStorage;
-//	let preferences = _preferences;
-//
-//	// Get/set preferences 
-//	if (preferences) {
-//		localStorage.setItem("preferences", JSON.stringify(preferences));
-//	} else {
-//		preferences = JSON.parse(localStorage.getItem("preferences"));
-//		let server = "http://localhost:5279";
-//		let xhr = new XMLHttpRequest();
-//		xhr.open("POST", server, true);
-//		console.log(preferences);
-//	}
-//
-//	// Apply preferences
-//	let channel_ids = [];
-//	let channels = preferences.result.local.subscriptions;
-//	let category_name = "Following";
-//	let category_names= JSON.parse(localStorage.getItem("category_names"));
-//	let following_filter = {};
-//	console.log(channels);
-//
-//	// Create/update "Following" category if there are any channels in subscriptions
-//	if (channels) {
-//		channels.forEach( (channel) => {
-//			if (channel)
-//				channel_ids.push(channel.match(/[^:#]*[:#]?([0-9A-Fa-f]{40})/)[1]);
-//		});
-//
-//		following_filter = {
-//			channel_ids: channel_ids,
-//			order_by: "release_time",
-//			has_source: true
-//		};
-//
-//		// Add "Following" as first category or remove it if there are no follows
-//		if (!category_names) {
-//			category_names = [category_name];
-//		} else if (category_names[0] != category_name) {
-//				category_names.splice(0, 0, category_name);
-//		}
-//	} else if (category_names[0] == category_name) {
-//		category_names.splice(0, 1);
-//	}
-//
-//	// Store category_names
-//	localStorage.setItem("category_names", JSON.stringify(category_names));
-//	localStorage.setItem("category_" + category_name, JSON.stringify(following_filter));
-//
-//
-//}
 function timeDifference(current, previous) {
 	var secondsPerMinute = 60;
 
@@ -114,29 +75,36 @@ function timeDifference(current, previous) {
 	var secondsPerYear = secondsPerDay * 365;
 
 	var elapsed = current - previous;
+	let timeTerm = "ago";
+	if (elapsed < 0) {
+		elapsed *= -1;
+		timeTerm = "until release";
+	}
+
+
 
 	if (elapsed < secondsPerMinute) {
-		return Math.floor(elapsed) + ' seconds ago';   
+		return Math.floor(elapsed) + ` seconds ${timeTerm}`;
 	}
 
 	else if (elapsed < secondsPerHour) {
-		return Math.floor(elapsed/secondsPerMinute) + ' minutes ago';   
+		return Math.floor(elapsed/secondsPerMinute) + ` minutes ${timeTerm}`;
 	}
 
 	else if (elapsed < secondsPerDay ) {
-		return Math.floor(elapsed/secondsPerHour ) + ' hours ago';   
+		return Math.floor(elapsed/secondsPerHour ) + ` hours ${timeTerm}`;
 	}
 
 	else if (elapsed < secondsPerMonth) {
-		return Math.floor(elapsed/secondsPerDay) + ' days ago';   
+		return Math.floor(elapsed/secondsPerDay) + ` days ${timeTerm}`;
 	}
 
 	else if (elapsed < secondsPerYear) {
-		return Math.floor(elapsed/secondsPerMonth) + ' months ago';   
+		return Math.floor(elapsed/secondsPerMonth) + ` months ${timeTerm}`;
 	}
 
 	else {
-		return Math.floor(elapsed/secondsPerYear ) + ' years ago';   
+		return Math.floor(elapsed/secondsPerYear ) + ` years ${timeTerm}`;
 	}
 }
 
@@ -145,7 +113,7 @@ function getClaimTypeFromUrl(lbryUrl) {
 	if (lbryUrl.match(new RegExp(".*@.*")) &&
 		!lbryUrl.match(new RegExp(".*//.*/.*")))
 		return "channel.html";
-	else 
+	else
 		return "video.html";
 }
 
@@ -160,7 +128,7 @@ function hexStrToAsciiStr(str) {
 			if (!isValidUrlChar(char))
 				break;
 			asciiStr += char;
-			i++; //No reasong to check following char 
+			i++; //No reasong to check following char
 		}
 		else if (isValidUrlChar(tempStr[i])) {
 			asciiStr += tempStr[i];
