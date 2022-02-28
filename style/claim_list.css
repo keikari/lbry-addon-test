@@ -1,9 +1,8 @@
-#div {
+.div {
 	border-color:red;
 	border-style:solid;
 }
 
-hr {color: white;}
 .hr_div {padding:2px}
 
 #claim_list {
@@ -16,6 +15,10 @@ hr {color: white;}
 	margin:0px 0px;
 	display: flex;
 }
+.preview_info_div, .thumbnail_div {
+	display: inline-block;
+	position:relative;
+}
 .thumbnail_div img {
 	width:250px;
 	height:140px;
@@ -25,14 +28,11 @@ hr {color: white;}
 	height:150px;
 }
 a {
-	color:#aaa;
+	color:#ccc;
+	text-decoration: none;
 	width: fit-content;
 	display:inline;
 	position: relative;
-}
-.preview_info_div, .thumbnail_div {
-	display: inline-block;
-	position:relative;
 }
 .preview_info_div {
 	width:100%;

@@ -1,7 +1,6 @@
 var lbryUrl = document.URL.match(new RegExp(/lbry:\/\/.*/))[0];
 lbryUrl = decodeURIComponent(lbryUrl);
 var claim_id = lbryUrl.match(new RegExp(/[a-f|0-9]*$/))[0];
-let server = "http://localhost:5279";
 let thumbnail = "";
 let localStorage = window.localStorage;
 
@@ -412,6 +411,7 @@ function loadFromClaim(claim) {
 		setTimeout(() => {loadFromClaim(claim)}, 100);
 		return
 	}
+	
 	let mime_type = claim.value.source.media_type;
 	if (mime_type.match(new RegExp("video/")) ||
 		mime_type.match(new RegExp("audio/")))

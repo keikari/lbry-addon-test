@@ -1,6 +1,7 @@
 
 function sendSearchParams(search_params, channel_claim) {
 	search_params.page = 1;
+	search_params.has_source = true;
 	if (!search_params.not_tags)
 		search_params.not_tags = [];
 	search_params.not_tags = search_params.not_tags.concat(["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"]);

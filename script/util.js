@@ -54,7 +54,7 @@ function doACall(method, params, callback = (a, b) => {}, kwargs = {}) {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			let response = JSON.parse(xhr.response);
 			if (!response.error) {
-				callback(JSON.parse(xhr.response), kwargs);
+				callback(response, kwargs);
 			} else {
 				addNotification(response.error.message);
 			}

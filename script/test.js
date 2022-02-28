@@ -71,6 +71,9 @@ function doLBRY(tabId, changeInfo, tab) {
 		}
 	}
 }
+if (typeof browser === "undefined")
+	var browser = chrome;
+	
 
 browser.browserAction.onClicked.addListener(() => {browser.tabs.create({ url: "lbry://"})});
 

@@ -78,6 +78,7 @@ function floatToMainPlayer(video) {
 		floating_player.pause();
 		floating_player.id = "";
 		video.play();
+		video.currentTime = floating_player.currentTime;
 	}
 	floating_player.id = "floating_player";
 	floating_player.hidden = true;
