@@ -40,6 +40,7 @@ video {
 }
 #description_div * {
 	margin: 0px;
+	overflow-wrap: anywhere;
 }
 #content_div a {
 	display:inline-block;
