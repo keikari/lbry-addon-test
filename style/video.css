@@ -1,0 +1,84 @@
+.div {
+	border-color: red;
+	border-style: solid;
+}
+h1,h2,h3,h4,h5 {
+	color: #ddd;
+}
+video {
+	max-width:1200px;
+	max-height:1000px;
+}
+#details_div {
+	color: #fff;
+	margin:0px;
+	padding:0px;
+	position:relative;
+}
+#details_div div {
+	display: inline-block;
+}
+#right_div {
+	right:0;
+	position: absolute;
+	height:100%;
+}
+#options_div {
+	margin:10px;
+}
+#content_div {
+	background:#111;
+	color:#ccc;
+}
+#info_div {
+	text-align:left;
+	display:inline-block;
+}
+#description_div a {
+	display:inline-block;
+}
+#description_div * {
+	margin: 0px;
+}
+#content_div a {
+	display:inline-block;
+}
+#content_div * {
+	margin: 0px;
+}
+#LBC_text {
+	position: absolute;
+	bottom:0;
+	right:5px;
+}
+#support_div,#repost_div {
+	position: fixed;
+	width:fit-content;
+	margin:auto;
+	left:0;
+	right:0;
+	top:45%;
+	background: #444;
+	padding: 10px;
+} 
+#repost_div div {
+	margin: 10px 0;
+}
+#repost_div #bid_input,#repost_name_input  {
+	float: right;
+}
+.x_button {
+	float:right;
+}
+.text_div {
+padding: 15px;}
+#content_div img {
+	max-width:80%;
+}
+#channel_url {
+	color:#ddd;
+}
+a {
+	color:#eee;
+}
+

@@ -1,26 +1,9 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="style/main.css"/>
 		<script src="script/util.js"></script>
 		<script src="script/main.js"></script>
-		<style>
-			body{margin:0; overflow:hidden; font-family: arial}
-			.side_bar_visible{position:relative;width:92%; margin: 0px; height:100%;  border:none; display:inline-block; float:right}
-			.side_bar_hidden{position:relative;width:100%; margin: 0px; height:100%;  border:none; display:inline-block;}
-			#top-bar{position:absolute; width:100%; height:51px; background:#333; z-index: 1; text-align: center}
-			#search_box{position:relative; top:10%; margin:auto;display:inline-block}
-			#search_input{width:70%; font-size:22px; padding:3px; background:#222; color:#eee; border:none}
-			#search_btn{font-size:22px; padding: 5px; background:#222; color: #eee; border:none}
-			#toggle_side_bar_div{position: relative; float:left; width: 8%; height: 100%; display: inline-block}
-			#side_bar{width: 8%; height: 100%; background:#444; padding: 51px 0; margin: 0px}
-			#category_list_item{position: relative; color:#ccc; text-align:center; background:#222; padding: 10px; margin: 1px}
-			#floating_player_div,#floating_player{position:fixed; bottom: 0; right:0; width:360px; height:240px}
-			#wallet_btn,#unlock_btn {position:relative;float:right; top:18%; right:10px; font-size:18px; background:#222; color:#eee; display:inline-block; border:none; padding:5px; margin: 0 2px }
-			#password_input{position: fixed; top: 50%; left: 50%;}
-			#foating_player_title{position: relative; background: #eaa; width:360px; height:30px; bottom: 18px}
-			#notification_list{position:fixed; bottom: 10; list-style: none; max-width:90%}
-			.notification_item{background: #f88; margin: 2px 0px; font-size: 18px; padding: 5px}
-		</style>
 	</head>
 	<body>
 		<div id="top-bar">
@@ -28,10 +11,10 @@
 			</div>
 			<div id="search_box">
 				<input id="search_input" type="text"></input>
-				<button id="search_btn">Search</button>
+				<button id="search_btn" class="btn">Search</button>
 			</div>
-			<button id="unlock_btn">Unlock</button>
-			<button id="wallet_btn">Wallet</button>
+			<button id="unlock_btn" class="btn">Unlock</button>
+			<button id="wallet_btn" class="btn">Wallet</button>
 		</div>
 		<div id="main-div">
 			<div id="side_bar">
