@@ -117,8 +117,10 @@ function createRepostButton(claim) {
 		create_repost_button.onclick = () => {
 			let channel_id = channel_selector.value;
 			let name = repost_name_input.value;
-			let bid = bid_input.value;
 			let reposted_claim_id = claim.claim_id;
+			let bid = bid_input.value;
+			if (!bid.match("[0-9]+\.[0-9]+"))
+				bid += ".0";
 			params = {
 				name: name,
 				bid: bid,
@@ -126,7 +128,11 @@ function createRepostButton(claim) {
 			}
 			if (channel_id)
 				params.channel_id = channel_id;
-			doACall("stream_repost", params, (response) => {});
+			doACall("stream_repost", params, (response) => {
+				addNotification(`Repost created of ${name}`, 5000);
+				repost_div.remove();
+				button.disabled = false;
+			});
 		};
 
 		let x_button = document.createElement("button");
