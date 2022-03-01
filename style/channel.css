@@ -6,7 +6,7 @@
 	font-family: arial;
 }
 body {
-	background: #222;
+	background: #111;
 	color: #aaa;
 	padding-top:50px;
 } 
@@ -44,4 +44,9 @@ body {
 #channel_info_div {
 	height: 160px;
 	box-shadow: 0 0 5px black;
+}
+#claim_list_div {
+	padding: 0px 20px;
+	background: #222;
+	
 }
