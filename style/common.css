@@ -15,7 +15,7 @@ body {
 	width:90%;
 	margin:auto;
 }
-#claim_list_div, #container_div {
+#claim_list_div, #container_div{
 	padding: 0px 20px;
 	background: #1D1D1D;
 	box-shadow: 0 0 3px black;

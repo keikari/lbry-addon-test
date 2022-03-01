@@ -7,6 +7,7 @@ let localStorage = window.localStorage;
 function createDeleteButton(claim) {
 	let button = document.createElement("button");
 	button.innerHTML = "Delete";
+	button.classList.add("content_btn");
 	let isDeleted = false;
 	button.onclick = () => {
 		if (!isDeleted) {
@@ -38,6 +39,7 @@ function createFollowButton(response, obj) {
 	let channelURL = claim.signing_channel.permanent_url;
 	let isFollowing = subscriptions.includes(channelURL);
 	button.innerHTML = (isFollowing ? "Unfollow" : "Follow");
+	button.classList.add("content_btn");
 
 	button.onclick = () => { 
 		doACall("preference_get", {key: "local"}, (response, channelURL) => {
@@ -79,6 +81,7 @@ function createRepostButton(claim) {
 	let button = document.createElement("button");
 	let main_div = document.querySelector("#main_div");
 	button.innerHTML = "Repost";
+	button.classList.add("content_btn");
 
 	button.onclick = () => { 
 		button.disabled = true;
@@ -149,6 +152,7 @@ function createSupportButton(claim) {
 	let button = document.createElement("button");
 	let main_div = document.querySelector("#main_div");
 	button.innerHTML = "Support";
+	button.classList.add("content_btn");
 
 	button.onclick = () => {
 		button.disabled = true;
