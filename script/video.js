@@ -297,6 +297,17 @@ function createDocument(obj, metadata) {
 
 }
 
+function createPdf(obj, metadata) {
+	let name = obj.name || obj.claim_name;
+	let get_url = 'http://localhost:5280/get/'+name+":"+obj.claim_id;
+	let content_div = document.querySelector("#content_div");
+	let iframe = document.createElement("iframe");
+	iframe.src = get_url;
+	iframe.classList.add("pdf_iframe");
+	content_div.append(iframe);
+
+}
+
 function createImage(obj, metadata) {
 	console.log("image");
 	let content_div = document.querySelector("#content_div");
@@ -430,6 +441,8 @@ function loadFromClaim(claim) {
 		createDocument(claim, claim.value);
 	else if (mime_type.match(new RegExp("image/")))
 		createImage(claim, claim.value);
+	else if (mime_type.match(new RegExp("application/pdf")))
+		createPdf(claim, claim.value);
 
 	setInfo(claim, claim.value);
 }
@@ -479,6 +492,7 @@ function loadFromResolve() {
 				main_div.append(div);
 				sendSearchParams({claim_ids: obj.value.claims});
 			} else if (!obj.value.fee || !obj.value.fee.amount || obj.purchase_receipt) {
+				console.log("hmm");
 				lbryUrl = obj.permanent_url;
 				claim_id = obj.claim_id;
 				doACall("get", {uri: lbryUrl}, (response) => {
@@ -493,6 +507,8 @@ function loadFromResolve() {
 						createDocument(obj, obj.metadata);
 					else if (mime_type.match(new RegExp("image/")))
 						createImage(obj, obj.metadata);
+					else if (mime_type.match(new RegExp("application/pdf")))
+						createPdf(obj, obj.metadata);
 				});
 			} else if (obj.value.fee) {
 				// Hande paid content

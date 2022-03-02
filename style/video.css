@@ -8,6 +8,7 @@ h1,h2,h3,h4,h5 {
 video {
 	max-width:1200px;
 	max-height:1000px;
+	background: black;
 }
 #details_div {
 	color: #fff;
@@ -89,5 +90,10 @@ padding: 15px;}
 }
 a {
 	color:#eee;
+}
+.pdf_iframe {
+	position: relative;
+	width: 100%;
+	height: 80%;
 }
 
