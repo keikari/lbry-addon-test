@@ -20,7 +20,7 @@
 	var rx_code = /\n((```|~~~).*\n?([^]*?)\n?\2|((    .*?\n)+))/g;
 	var rx_link = /[^!](\[(.*)\]\((.*)\))/g;
 	rx_link = /(([^!])\[((?:!\[[^\]]*?\]\(.*?\)|.)*?)\]\((.*?)\))/g; //Allows images in links
-  var rx_img = /(!\[([^\]]*?)\]\((.*?)\))/g;
+	var rx_img = /(!\[([^\]]*?)\]\((.*?)\))/g;
 	var rx_table = /\n(( *\|.*?\| *\n)+)/g;
 	var rx_thead = /^.*\n( *\|( *\:?-+\:?-+\:? *\|)* *\n|)/;
 	var rx_row = /.*\n/g;
@@ -31,7 +31,11 @@
 
 	var rx_http = /https?:\/\/[^\s\n\r<]*/g;
 	var rx_n = /\n/g;
+	var rx_b = /\*{2}(\*?[^\*]+?\*?)\*{2}/g;
+	var rx_codeline = /``(.+?)``/g;
+	var rx_em = /\*([^\*]+?)\*/g;
 	var rx_time = /[0-9]{0,2}:?[0-9]{1,2}:[0-9]{2}/g;
+
 
 	function replace(rex, fn) {
 		src = src.replace(rex, fn);
@@ -96,9 +100,37 @@
 	src = list(src);
 	replace(rx_listjoin, '');
 
+
 	// code
 	replace(rx_code, function(all, p1, p2, p3, p4) {
 		stash[--si] = element('pre', element('code', p3||p4.replace(/^    /gm, '')));
+		return si + '\uf8ff';
+	});
+
+	// bold
+	replace(rx_b, function(all, p1) {
+		let rx_codeline = /``(.+?)``/;
+		let rx_em = /\*([^\*]+?)\*/;
+		let p1_code_match = p1.match(rx_codeline);
+		let p1_em_match = p1.match(rx_em);
+		if (p1_code_match)
+			p1 = `<code>${p1_code_match[1]}</code>`;
+		else if (p1_em_match)
+			p1 = `<em>${p1_em_match[1]}</em>`;
+
+		stash[--si] = `<b>${p1}</b>`;
+		return si + '\uf8ff';
+	});
+
+	// codeline
+	replace(rx_codeline, function(all, p1) {
+		stash[--si] = `<code>${p1}</code>`;
+		return si + '\uf8ff';
+	});
+
+	// em
+	replace(rx_em, function(all, p1) {
+		stash[--si] = `<em>${p1}</em>`;
 		return si + '\uf8ff';
 	});
 
@@ -109,16 +141,14 @@
 		if (p3_rx_match) {
 			p3 = '<img src="' + p3_rx_match[3] + '" alt="' + p3_rx_match[2] + '"/>';
 		}
-		
 		stash[--si] = p2 + '<a href="' + p4 + '">' + p3 + '</a>';
 		return si + '\uf8ff';
-
 	});
+
 	// img
 	replace(rx_img, function(all, p1, p2, p3) {
 		stash[--si] = '<img src="' + p3 + '" alt="' + p2 + '"/>';
 		return si + '\uf8ff';
-
 	});
 
 	// http(s)
@@ -135,10 +165,6 @@
 	});
 
 
-
-
-
-
 	// table
 	replace(rx_table, function(all, table) {
 		var sep = table.match(rx_thead)[1];
@@ -150,6 +176,8 @@
 			})
 		)
 	});
+
+
 
 	// heading
 	replace(rx_heading, function(all, _, p1, p2) { return _ + element('h' + p1.length, unesc(highlight(p2))) });
