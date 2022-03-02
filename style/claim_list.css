@@ -20,6 +20,9 @@ hr {
 .no_channel .preview_details_div {
 	top: 66px;
 }
+.no_channel.repost .preview_details_div {
+	top: 82px;
+}
 
 
 #claim_list {

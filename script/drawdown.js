@@ -107,6 +107,21 @@
 		return si + '\uf8ff';
 	});
 
+	// link
+	replace(rx_link, function(all, p1, p2, p3, p4) {
+		let rx_imge = /(!\[([^\]]*?)\]\((.*?)\))/; // To match image inside a link
+		let rx_b = /\*{2}(\*?[^\*]+?\*?)\*{2}/;
+		let p3_image_match = p3.match(rx_imge);
+		let p3_b_match = p3.match(rx_b);
+		if (p3_image_match) {
+			p3 = '<img src="' + p3_image_match[3] + '" alt="' + p3_image_match[2] + '"/>';
+		} else if (p3_b_match) {
+			p3 = `<b>${p3_b_match[1]}</b>`;
+		}
+		stash[--si] = p2 + '<a href="' + p4 + '">' + p3 + '</a>';
+		return si + '\uf8ff';
+	});
+
 	// bold
 	replace(rx_b, function(all, p1) {
 		let rx_codeline = /``(.+?)``/;
@@ -134,16 +149,6 @@
 		return si + '\uf8ff';
 	});
 
-	// link
-	replace(rx_link, function(all, p1, p2, p3, p4) {
-		rx_imge = /(!\[([^\]]*?)\]\((.*?)\))/; // To match image inside a link
-		let p3_rx_match = p3.match(rx_imge)
-		if (p3_rx_match) {
-			p3 = '<img src="' + p3_rx_match[3] + '" alt="' + p3_rx_match[2] + '"/>';
-		}
-		stash[--si] = p2 + '<a href="' + p4 + '">' + p3 + '</a>';
-		return si + '\uf8ff';
-	});
 
 	// img
 	replace(rx_img, function(all, p1, p2, p3) {

@@ -195,13 +195,16 @@ window.onload = () => {
 				if (!video.paused)
 					moveVideoToFloatingPlayer(sd_hash, time)
 			};
-		}
+		} 
+
 		console.log("Iframe loaded");
 		updateWalletBalance();
 		listCategories();
 		count = 0;
 		
 	};
+
+	//Load start page
 	iframe.src = page + "?url=" + lbryUrl;
 
 	// Search bar

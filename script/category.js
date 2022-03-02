@@ -4,7 +4,7 @@ function category_main() {
 	let localStorage = window.localStorage;
 	let search_params = localStorage.getItem("category_" + category_name);
 	search_params = JSON.parse(search_params);
-	console.log(search_params);
+	window.parent.document.title = category_name;
 
 	if (category_name === "Following") {
 		doACall("preference_get", {key: "local"}, (response) => {

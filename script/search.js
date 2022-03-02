@@ -7,8 +7,8 @@ function getClaimTypeFromUrl(lbryUrl) {
 }
 
 
-function createMostSupported(response, lbry_url) {
-	let claim = response.result[lbry_url];
+function createMostSupported(claim) {
+	console.log(claim);
 	let filtered_txids = JSON.parse(window.localStorage.getItem("filtered_outpoints"));
 	if (claim.value_type === "repost")
 		claim = claim.reposted_claim;
@@ -58,6 +58,7 @@ function createMostSupported(response, lbry_url) {
 function search_main() {
 	let url = new URL(document.URL);
 	let search_term = url.searchParams.get("search_term");
+	window.parent.document.title = `Search: ${search_term}`;
 	// If searhing for URL naviagte to page
 	if (search_term.match(new RegExp("^lbry://.*"))) {
 		let page = getClaimTypeFromUrl(search_term);
@@ -66,7 +67,7 @@ function search_main() {
 
 	let lbry_url = "lbry://"+search_term.replace(/\s|"/g, "");
 	doACall("resolve", {urls: lbry_url}, (response) =>{
-			createMostSupported(response, lbry_url);
+			createMostSupported(response.result[lbry_url]);
 	});
 
 	let search_params = {

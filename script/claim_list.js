@@ -143,7 +143,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			if (repost_channel_url)
 				a.href = `channel.html?url=${repost_channel_url}`;
 			a.innerHTML = repost_channel_name;
-			let repost_label = document.createElement("lable");
+			let repost_label = document.createElement("label");
 			repost_label.innerHTML = "Reposted by ";
 			repost_label.append(a);
 			repost_text_div.append(repost_label);
