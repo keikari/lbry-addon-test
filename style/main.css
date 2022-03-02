@@ -27,6 +27,7 @@ body {
 	background:#2A2A2A;
 	z-index: 1;
 	text-align: center;
+	box-shadow: 0 0 3px black;
 }
 #search_box {
 	position:relative;

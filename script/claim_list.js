@@ -44,6 +44,9 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			return;
 		}
 		
+		// Just create this in somewhere
+		const li = document.createElement("li");
+		li.classList.add("claim_item");
 
 		const a = document.createElement("a");
 		if (claim.value_type != "channel")
@@ -71,6 +74,8 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			channel_name = document.createElement("h4");
 			channel_name.classList.add("channel_name");
 			channel_name.innerHTML = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
+		} else {
+			li.classList.add("no_channel");
 		}
 
 		//Create details div
@@ -128,7 +133,6 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		price_text.style = "float: right; margin-right: 5px; text-align:right";
 		preview_details_div.append(price_text);
 
-
 		// Repost info
 		if (reposted) {
 			let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
@@ -137,7 +141,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			repost_text_div.classList.add("repost_text_div");
 			let a = document.createElement("a");
 			if (repost_channel_url)
-				a.href = repost_channel_url;
+				a.href = `channel.html?url=${repost_channel_url}`;
 			a.innerHTML = repost_channel_name;
 			let repost_label = document.createElement("lable");
 			repost_label.innerHTML = "Reposted by ";
@@ -145,9 +149,9 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			repost_text_div.append(repost_label);
 			preview_info_div.insertBefore(repost_text_div, preview_info_div.firstChild);
 
-		}
+			li.classList.add("repost");
 
-		const li = document.createElement("li");
+		}
 
 		// Make cliking hr show/hide the claim JSON
 		const hr_div = document.createElement("div");
