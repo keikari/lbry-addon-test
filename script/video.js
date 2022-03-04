@@ -303,6 +303,7 @@ function createPdf(obj, metadata) {
 	let content_div = document.querySelector("#content_div");
 	let iframe = document.createElement("iframe");
 	iframe.src = get_url;
+	iframe.sandbox = "";
 	iframe.classList.add("pdf_iframe");
 	content_div.append(iframe);
 
@@ -444,6 +445,8 @@ function loadFromClaim(claim) {
 		createImage(claim, claim.value);
 	else if (mime_type.match(new RegExp("application/pdf")))
 		createPdf(claim, claim.value);
+	//	else if (mime_type.match(new RegExp("text/html")))
+	//		createPdf(claim, claim.value);
 
 	setInfo(claim, claim.value);
 }
