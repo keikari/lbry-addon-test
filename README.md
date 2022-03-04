@@ -29,7 +29,7 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 #### Features:
 - search
 - advanced search options(can be stored as a "categories")
-- view video, audio, markdown(needs polishing), ~pdf and image files
+- view video, audio, markdown(needs polishing), ~~pdf~~ and image files
 - repost
 - tip/support
 - follows(kind of, this uses your "local" prefrences from lbry app)
