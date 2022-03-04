@@ -402,7 +402,8 @@ function setInfo(obj, metadata) {
 			json_div.classList.add("json_viewer");
 			json_viewer = new JSONViewer();
 			json_div.appendChild(json_viewer.getContainer());
-			main_div.insertBefore(json_div, document.querySelector("#description_div"));
+			let description_div = document.querySelector("#description_div");
+			description_div.parentElement.insertBefore(json_div, description_div);
 			json_viewer.showJSON(obj, -1, 1);
 		} else {
 			json_viewer.remove();
