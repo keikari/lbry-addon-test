@@ -2,12 +2,18 @@
 	border-color: red;
 	border-style: solid;
 }
+{
+	color: white;
+}
+p {
+	padding: 5px;
+}
 #hr_div {
 	padding: 5px;
 	opacity: 0;
 }
 h1,h2,h3,h4,h5 {
-	color: #ddd;
+	color: #eee;
 }
 video {
 	max-width:1200px;
@@ -15,17 +21,14 @@ video {
 	background: black;
 }
 a {
-	color: #888;
+	color: #bbb;
 }
 #container_div {
 	padding: 10px;
 }
-#container_div div {
-	background: #222222;
-	color: #ddd;
-}
 #details_div {
 	color: #fff;
+	background: #222222;
 	padding: 0px 10px;
 	position:relative;
 	box-shadow: 0 0 3px black;
@@ -42,7 +45,6 @@ a {
 }
 #content_div {
 	background:#111;
-	color:#ccc;
 	box-shadow: 0 0 3px black;
 }
 #info_div {
@@ -56,6 +58,7 @@ a {
 	margin-bottom: 10px;
 }
 #description_div {
+	background: #222222;
 	box-shadow: 0 0 3px black;
 	padding: 10px;
 }
@@ -95,9 +98,7 @@ a {
 	float:right;
 }
 .text_div {
-padding: 15px;}
-#content_div img {
-	max-width:80%;
+padding: 15px;
 }
 #channel_url {
 	color:#ddd;
@@ -107,5 +108,20 @@ padding: 15px;}
 	width: 100%;
 	height: 80%;
 	border-style: none;
+}
+
+#content_div.document_div {
+	position: relative;
+	background: #1A1A1A;
+	padding: 10px 80px;
+}
+#content_div.document_div > :is(h1,h2,h3,h4,h5,h6) {
+	margin: 0px;
+}
+#content_div.document_div img {
+	position: relative;
+	display: block;
+	max-width: 80%;
+	margin: auto;
 }
 

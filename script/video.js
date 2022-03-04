@@ -286,7 +286,7 @@ function createDocument(obj, metadata) {
 		if (xhr.readyState === 4 && xhr.status === 206) {
 			let content_div = document.querySelector("#content_div");
 			content_div.innerHTML = markdown(xhr.response);
-			content_div.classList.add("text_div");
+			content_div.classList.add("document_div");
 		} else if (xhr.readyState === 4 && xhr.status === 404 && !tried) {
 			xhr.open("GET", get_url, true);
 			tried = true;
