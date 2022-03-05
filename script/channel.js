@@ -9,7 +9,7 @@ function setInfo(claim) {
 	profile_img_elem.src = profile_img;
 
 	let title_elem = document.querySelector("#channel_title");
-	title_elem.innerHTML = cleanHTML(title);
+	title_elem.innerText = title;
 
 	let cover_img_elem = document.querySelector("#cover_image");
 	cover_img_elem.src = cover_img;

@@ -22,7 +22,7 @@ function itemInArray(item, array) {
 	let notification_list = window.parent.document.querySelector("#notification_list");
 	let notification_item = document.createElement("li");
 	notification_item.classList.add("notification_item");
-	notification_item.innerHTML = cleanHTML(text);
+	notification_item.innerText = text;
 
 	notification_item.onclick = () => notification_item.remove();
 
@@ -30,14 +30,14 @@ function itemInArray(item, array) {
 	let notifications = notification_list.querySelectorAll("li");
 	for (let i = 0; i < notifications.length; i++) {
 		let notification = notifications[i];
-		if ( notification.innerHTML === text || text === notification.innerHTML.substr(0, notification.innerHTML.lastIndexOf("("))) {
-			let count = notification.innerHTML.match(new RegExp(/.*\(([0-9]+)\)$/));
+		if ( notification.innerText === text || text === notification.innerText.substr(0, notification.innerText.lastIndexOf("("))) {
+			let count = notification.innerText.match(new RegExp(/.*\(([0-9]+)\)$/));
 			if ( count ) {
 				count = parseInt(count[1]) + 1;
 			} else {
 				count = 2;
 			}
-			notification_item.innerHTML = cleanHTML(text + "(" + count.toString() + ")");
+			notification_item.innerText = text + "(" + count.toString() + ")";
 			notification.remove();
 			break;
 		}

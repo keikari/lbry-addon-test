@@ -103,19 +103,19 @@ function populateCategorySelector(selector_id) {
 	let localstorage = window.localStorage;
 	let selector = document.querySelector(selector_id);
 	let value = selector.value;
-	selector.innerHTML = "";
+	selector.innerText = "";
 
 	let category_names = JSON.parse(window.localStorage.getItem("category_names"));
 	// Insert one empty option
 	let option = document.createElement("option");
 	option.value = "";
-	option.innerHTML = "";
+	option.innerText = "";
 	selector.append(option);
 	if (category_names) {
 		category_names.forEach((name) => {
 			option = document.createElement("option");
 			option.value = name;
-			option.innerHTML = cleanHTML(name);
+			option.innerText = name;
 			selector.append(option);
 		});
 	}
@@ -154,7 +154,7 @@ function getText(e, elem) {
 			text = elem.value;
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
-			preview_text.innerHTML = cleanHTML(text + " X");
+			preview_text.innerText = text + " X";
 			preview_text.onclick = () => {
 				search_params[elem.id] = null;
 				preview_text.remove();
@@ -176,7 +176,7 @@ function getNumber(e, elem) {
 			search_params[elem.id] = parseInt(text);
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
-			preview_text.innerHTML = cleanHTML(text + " X");
+			preview_text.innerText = text + " X";
 			preview_text.onclick = () => {
 				search_params[elem.id] = null;
 				preview_text.remove();
@@ -220,7 +220,7 @@ function getChannelUrl(e) {
 
 					let preview_text = document.createElement("label");
 					preview_text.classList.add("preview_option");
-					preview_text.innerHTML = cleanHTML(lbry_url + " X");
+					preview_text.innerText = lbry_url + " X";
 					preview_text.onclick = () => {
 						preview_text.remove();
 						console.log("id: " + this.id);
@@ -249,14 +249,14 @@ function getOrderBy() {
 
 		if (this.is_ascending) {
 			this.is_ascending = false;
-			text = cleanHTML(text);
-			preview_text.innerHTML = "^" + text + " X";
+			text = text;
+			preview_text.innerText = "^" + text + " X";
 			preview_text.value = "^" + text;
-			order_button.innerHTML = "ASC";
+			order_button.innerText = "ASC";
 		} else {
-			preview_text.innerHTML = text + " X";
+			preview_text.innerText = text + " X";
 			preview_text.value = text;
-			order_button.innerHTML = "DESC";
+			order_button.innerText = "DESC";
 		}
 		entry_div.classList.add("preview_option");
 		order_button.id = "order_button";
@@ -269,16 +269,16 @@ function getOrderBy() {
 				let order = "";
 				if (order_by == desc_order){
 					order =  asc_order;
-					order_button.innerHTML = "ASC";
+					order_button.innerText = "ASC";
 				} else if (order_by == asc_order) {
 						order =  desc_order;
-						order_button.innerHTML = "DESC";
+						order_button.innerText = "DESC";
 				} else {
 					continue;
 				}
 					search_params.order_by[i] = order;
 					preview_text.value = order;
-					preview_text.innerHTML = cleanHTML(order + " X");
+					preview_text.innerText = order + " X";
 					return;
 			}
 		}
@@ -329,7 +329,7 @@ function getTextArray(e, elem) {
 				search_params[search_param] = array_items;
 				let preview_text = document.createElement("label");
 				preview_text.classList.add("preview_option");
-				preview_text.innerHTML = cleanHTML(text + " X");
+				preview_text.innerText = text + " X";
 				preview_text.onclick = () => {
 					preview_text.remove();
 					search_params[search_param].splice(search_params[search_param].indexOf(text), 1);
@@ -347,7 +347,7 @@ function getCheckBox() {
 }
 
 function doSearch() {
-		document.querySelector("#claim_list").innerHTML = "";
+		document.querySelector("#claim_list").innerText = "";
 		sendSearchParams(search_params);
 }
 

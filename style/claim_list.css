@@ -17,11 +17,14 @@ hr {
 	background: #1F1F1F;
 }
 
+.has_channel .preview_details_div {
+	top: 44px;
+}
 .no_channel .preview_details_div {
-	top: 66px;
+	top: 56px;
 }
 .no_channel.repost .preview_details_div {
-	top: 82px;
+	top: 52px;
 }
 
 
@@ -39,13 +42,13 @@ hr {
 	display: inline-block;
 	position:relative;
 }
-.thumbnail_div img {
+.thumbnail_div > img {
 	width:250px;
 	height:140px;
 	box-shadow: 0 0 3px black;
 }
-.channel_thumbnail {
-	width:160px;
+.channel_thumbnail  {
+	width:160px !important;
 	height:150px;
 }
 #claim_list a {
@@ -59,8 +62,13 @@ hr {
 	width:100%;
 	max-height:140px;
 }
-.title, .channel_name, .release_time {
+.title, .channel_name, .release_time, .uploads_count, .claim_count {
 	margin: 5px 10px;
+}
+.staked_text, .price_text {
+	float: right;
+	margin-right: 5px;
+	text-align:right
 }
 .title {
 	max-height:22px;
@@ -68,7 +76,7 @@ hr {
 } 
 .preview_details_div {
 	position: relative;
-	top: 46px;
+	top: 35px;
 	display:block;
 	bottom:0;
 	width: 100%;

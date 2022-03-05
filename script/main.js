@@ -8,7 +8,7 @@ var localStorage = window.localStorage;
 function createCategoryItem(name) {
 	let category_list_item = document.createElement("p");
 	category_list_item.id = "category_list_item";
-	category_list_item.innerHTML = cleanHTML(name);
+	category_list_item.innerText = name;
 	if (name == "Manage Categories")
 		category_list_item.onclick = () => { iframe.src = "manage_categories.html"};
 	else 
@@ -18,7 +18,7 @@ function createCategoryItem(name) {
 
 function listCategories() {
 	let side_bar_div = document.querySelector("#side_bar");
-	side_bar_div.innerHTML = "";
+	side_bar_div.innerText = "";
 	let category_names = ["Following"];
 	category_names = category_names.concat(JSON.parse(localStorage.getItem("category_names")));
 	console.log(category_names);
@@ -74,7 +74,7 @@ function updateWalletBalance() {
 	doACall("wallet_balance", {}, (response) => {
 		let available_balance = parseFloat(response.result.available).toFixed(2).toString();
 		let total_balance = parseFloat(response.result.total).toFixed(2).toString();
-		wallet_btn.innerHTML = cleanHTML(available_balance + "/" + total_balance  + " LBC");
+		wallet_btn.innerText = available_balance + "/" + total_balance  + " LBC";
 	});
 }
 
@@ -226,7 +226,7 @@ window.onload = () => {
 	let unlock_btn = document.querySelector("#unlock_btn");
 	doACall("wallet_status", {}, (response) => {
 		if (response.result.is_locked) {
-			wallet_btn.innerHTML = "Wallet(Locked)";
+			wallet_btn.innerText = "Wallet(Locked)";
 			unlock_btn.onclick = () => { 
 				let password_input = document.querySelector("#password_input");
 				if (password_input) {

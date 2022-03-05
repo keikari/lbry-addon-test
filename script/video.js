@@ -1,12 +1,36 @@
+// These should be okay being global variables
 var lbryUrl = document.URL.match(new RegExp(/lbry:\/\/.*/))[0];
 lbryUrl = decodeURIComponent(lbryUrl);
 var claim_id = lbryUrl.match(new RegExp(/[a-f|0-9]*$/))[0];
-let thumbnail = "";
-let localStorage = window.localStorage;
+var localStorage = window.localStorage;
+
+function createContentView() {
+	doACall("get", {uri: lbryUrl, save_file: false}, (response) => {
+		let obj = response;
+		claim = obj.result;
+		if (!claim.metadata) {
+			claim.metadata = claim.value;
+			delete claim.value;
+		}
+		console.log(claim);
+		let mime_type = claim.mime_type;
+		if (mime_type.match(new RegExp("video/")) ||
+			mime_type.match(new RegExp("audio/")))
+			createVideo(claim);
+		else if (mime_type == "text/markdown")
+			createDocument(claim);
+		else if (mime_type.match(new RegExp("image/")))
+			createImage(claim);
+		else if (mime_type.match(new RegExp("application/pdf")))
+			createIframe(claim);
+		else if (mime_type.match(new RegExp("text/html")))
+			createIframe(claim);
+	});
+}
 
 function createDeleteButton(claim) {
 	let button = document.createElement("button");
-	button.innerHTML = "Delete";
+	button.innerText = "Delete";
 	button.classList.add("content_btn");
 	let isDeleted = false;
 	button.onclick = () => {
@@ -18,14 +42,14 @@ function createDeleteButton(claim) {
 						video.src = "";
 						video.load;
 					}
-					document.querySelector("#content_div").innerHTML = "";
+					document.querySelector("#content_div").innerText = "";
 				}
 			});
 		} else {
 			loadFromResolve();	
 		}
 		isDeleted = !isDeleted;
-		button.innerHTML = (!isDeleted ? "Delete" : "Create");
+		button.innerText = (!isDeleted ? "Delete" : "Create");
 	};
 	return button;
 }
@@ -38,7 +62,7 @@ function createFollowButton(response, obj) {
 	let subscriptions = response.result.local.value.subscriptions;
 	let channelURL = claim.signing_channel.permanent_url;
 	let isFollowing = subscriptions.includes(channelURL);
-	button.innerHTML = (isFollowing ? "Unfollow" : "Follow");
+	button.innerText = (isFollowing ? "Unfollow" : "Follow");
 	button.classList.add("content_btn");
 
 	button.onclick = () => { 
@@ -53,24 +77,24 @@ function createFollowButton(response, obj) {
 			}
 			local.value.subscriptions = subscriptions;
 			doACall("preference_set", {key: "local", value: local});
-			button.innerHTML = (!isFollowing ? "Unfollow" : "Follow");
+			button.innerText = (!isFollowing ? "Unfollow" : "Follow");
 		}, channelURL);
 	};
 	options_div.append(button);
 }
 function createChannelSelector() {
 	let channel_selector = document.createElement("select");
-	channel_selector.innerHTML = "<option>Searching channels...</option>";
+	channel_selector.innerText = "<option>Searching channels...</option>";
 	doACall("channel_list", {no_totals: true}, (response) => {
-		channel_selector.innerHTML = "";
+		channel_selector.innerText = "";
 		let option = document.createElement("option");
 		channel_selector.append(option);
 		option.value = "";
-		option.innerHTML = "None";
+		option.innerText = "None";
 		response.result.items.forEach((item) => {
 			let option = document.createElement("option");
 			option.value = item.claim_id;
-			option.innerHTML = cleanHTML(item.name + ":" + item.claim_id.substr(0,1));
+			option.innerText = item.name + ":" + item.claim_id.substr(0,1);
 			channel_selector.append(option);
 		});
 	});
@@ -80,7 +104,7 @@ function createChannelSelector() {
 function createRepostButton(claim) {
 	let button = document.createElement("button");
 	let main_div = document.querySelector("#main_div");
-	button.innerHTML = "Repost";
+	button.innerText = "Repost";
 	button.classList.add("content_btn");
 
 	button.onclick = () => { 
@@ -92,7 +116,7 @@ function createRepostButton(claim) {
 		let name_label = document.createElement("label");
 		name_label.id = "name_label";
 		name_label.for = "repost_name_input";
-		name_label.innerHTML = "Name:";
+		name_label.innerText = "Name:";
 		let repost_name_input = document.createElement("input");
 		repost_name_input.id = "repost_name_input";
 		repost_name_input.type = "text";
@@ -104,7 +128,7 @@ function createRepostButton(claim) {
 		let bid_label = document.createElement("label");
 		bid_label.id = "bid_label";
 		bid_label.for = "bid_input"
-		bid_label.innerHTML = "Bid:";
+		bid_label.innerText = "Bid:";
 		let bid_input = document.createElement("input");
 		bid_input.id = "bid_input";
 		let repost_bid_div = document.createElement("div");
@@ -113,7 +137,7 @@ function createRepostButton(claim) {
 		repost_bid_div.append(bid_input);
 		let create_repost_button = document.createElement("button");
 		create_repost_button.id = "create_repost_button";
-		create_repost_button.innerHTML = "Create Repost";
+		create_repost_button.innerText = "Create Repost";
 		create_repost_button.onclick = () => {
 			let channel_id = channel_selector.value;
 			let name = repost_name_input.value;
@@ -137,7 +161,7 @@ function createRepostButton(claim) {
 
 		let x_button = document.createElement("button");
 		x_button.classList.add("x_button");
-		x_button.innerHTML = "X";
+		x_button.innerText = "X";
 		
 		x_button.onclick = () => {
 			repost_div.remove();
@@ -157,7 +181,7 @@ function createRepostButton(claim) {
 function createSupportButton(claim) {
 	let button = document.createElement("button");
 	let main_div = document.querySelector("#main_div");
-	button.innerHTML = "Support";
+	button.innerText = "Support";
 	button.classList.add("content_btn");
 
 	button.onclick = () => {
@@ -172,15 +196,15 @@ function createSupportButton(claim) {
 		support_button_div.id = "support_button_div";
 		let support_button = document.createElement("button");
 		support_button.id = "support_button";
-		support_button.innerHTML = "Support";
+		support_button.innerText = "Support";
 		support_button.style.width = "50%";
 		let tip_button = document.createElement("button");
 		tip_button.id = "tip_button";
-		tip_button.innerHTML = "Tip";
+		tip_button.innerText = "Tip";
 		tip_button.style.width = "50%";
 		let x_button = document.createElement("button");
 		x_button.classList.add("x_button");
-		x_button.innerHTML = "X";
+		x_button.innerText = "X";
 		let channel_selector = createChannelSelector();
 		channel_selector.id = "channel_selector";
 		
@@ -255,31 +279,23 @@ function trackPlayerTime(sd_hash, video) {
 
 }
 
-function createVideo(obj, metadata) {
+function createVideo(claim) {
 	let video = document.createElement("video");
 	let content_div = document.querySelector("#content_div");
 	video.autoplay = false;
-	video.sd_hash = metadata.source.sd_hash;
-	let src1 = document.createElement("source");
-	src1.src = 'http://localhost:5280/stream/'+video.sd_hash;
-	let src2 = document.createElement("source");
-	src2.src = 'http://localhost:5280/get/'+obj.name+":"+obj.claim_id;
-	video.poster = metadata.thumbnail.url;
+	video.sd_hash = claim.metadata.source.sd_hash;
+	video.src = 'http://localhost:5280/stream/'+video.sd_hash;
+	video.poster = claim.metadata.thumbnail.url;
 	video.controls = true;
 	video.style.width="100%";
 
-	video.onloadeddata = () => trackPlayerTime(metadata.source.sd_hash, video);
+	video.onloadeddata = () => trackPlayerTime(claim.metadata.source.sd_hash, video);
 
-	video.append(src1);
-	video.append(src2);
 	content_div.append(video);
 }
 
-function createDocument(obj, metadata) {
-	let stream_url = 'http://localhost:5280/stream/'+metadata.source.sd_hash;
-	let get_url = 'http://localhost:5280/get/'+obj.name+":"+obj.claim_id;
-	let tried = false;
-
+function createDocument(claim) {
+	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
 	let xhr = new XMLHttpRequest();
 	xhr.open("GET", stream_url, true);
 	xhr.onreadystatechange = function() {
@@ -287,42 +303,33 @@ function createDocument(obj, metadata) {
 			let content_div = document.querySelector("#content_div");
 			content_div.innerHTML = cleanHTML(markdown(xhr.response));
 			content_div.classList.add("document_div");
-		} else if (xhr.readyState === 4 && xhr.status === 404 && !tried) {
-			xhr.open("GET", get_url, true);
-			tried = true;
-			xhr.send();
 		}
 	};
 	xhr.send();
-
 }
 
-function createIframe(obj, metadata) {
-	let name = obj.name || obj.claim_name;
-	let get_url = 'http://localhost:5280/get/'+name+":"+obj.claim_id;
+function createIframe(claim) {
+	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
 	let content_div = document.querySelector("#content_div");
 	let iframe = document.createElement("iframe");
-	iframe.src = get_url;
-	iframe.sandbox = "";
-	iframe.classList.add("pdf_iframe");
+	iframe.src = stream_url;
+	iframe.sandbox = ""; // To prevent scripts from running(though also prevent pdfs from being viewed)
+	iframe.classList.add("pdf_iframe"); 
 	content_div.append(iframe);
 
 }
 
-function createImage(obj, metadata) {
-	console.log("image");
+function createImage(claim) {
 	let content_div = document.querySelector("#content_div");
 	let img = document.createElement("img");
-	let get_url = 'http://localhost:5280/get/'+obj.name+":"+obj.claim_id;
-	img.src = get_url;
-
+	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
+	img.src = stream_url;
 	content_div.append(img);
 }
 
 function setInfo(obj, metadata) {
-	console.log(obj);
 	let details_div = document.querySelector("#details_div");
-	details_div.innerHTML = "";
+	details_div.innerText = "";
 	let right_div = document.createElement("div");
 	right_div.id = "right_div";
 
@@ -338,7 +345,6 @@ function setInfo(obj, metadata) {
 	info_div.append(title_text);
 	window.top.document.title = title;
 	
-
 	// Channel
 	let channel = "Anonymous";
 	let channel_url = "";
@@ -351,7 +357,7 @@ function setInfo(obj, metadata) {
 	let channel_text = document.createElement("h4");
 	channel_text.id = "channel_text";
 	channel_link.href = "channel.html?url="+channel_url;
-	channel_text.innerHTML = cleanHTML(channel);
+	channel_text.innerText = channel;
 	channel_link.append(channel_text);
 	info_div.append(channel_link);
 
@@ -361,14 +367,14 @@ function setInfo(obj, metadata) {
 	let url = obj.canonical_url.replaceAll('#', ':');
 	if (!obj.is_channel_signature_valid)
 		url = obj.short_url;
-	url_text.innerHTML = cleanHTML(url);
+	url_text.innerText = url;
 	info_div.append(url_text);
 
 	// Claim_id
 	let claim_id_text = document.createElement("p");
 	claim_id_text.id = "claim_id_text";
 	let claim_id = obj.claim_id;
-	claim_id_text.innerHTML = cleanHTML(claim_id);
+	claim_id_text.innerText = claim_id;
 	info_div.append(claim_id_text);
 
 	details_div.append(info_div);
@@ -388,7 +394,7 @@ function setInfo(obj, metadata) {
 	let LBC_text = document.createElement("p");
 	LBC_text.id = "LBC_text";
 	let LBC_amount = parseFloat(obj.meta.support_amount) + parseFloat(obj.amount);
-	LBC_text.innerHTML = cleanHTML(LBC_amount.toFixed(2).toString() + " LBC");
+	LBC_text.innerText = LBC_amount.toFixed(2).toString() + " LBC";
 
 	right_div.append(LBC_text);
 
@@ -424,7 +430,6 @@ function setInfo(obj, metadata) {
 			timestamp.innerHTML = cleanHTML("<u>" + timestamp.innerText + "</u>");
 			timestamp.onclick = () => {video.currentTime = time; video.play();};
 		});
-		//description_div.classList.add("text_div");
 	}
 
 }
@@ -434,28 +439,25 @@ function loadFromClaim(claim) {
 		setTimeout(() => {loadFromClaim(claim)}, 100);
 		return
 	}
-	
-	let mime_type = claim.value.source.media_type;
-	if (mime_type.match(new RegExp("video/")) ||
-		mime_type.match(new RegExp("audio/")))
-		createVideo(claim, claim.value);
-	else if (mime_type == "text/markdown")
-		createDocument(claim, claim.value);
-	else if (mime_type.match(new RegExp("image/")))
-		createImage(claim, claim.value);
-//	else if (mime_type.match(new RegExp("application/pdf")))
-//		createIframe(claim, claim.value);
-//	else if (mime_type.match(new RegExp("text/html")))
-//		createIframe(claim, claim.value);
-
+	createContentView();
 	setInfo(claim, claim.value);
+}
+
+function handleCollection(claim) {
+	let main_div = document.querySelector("#main_div");
+	let div = document.createElement("div");
+	let claim_list = document.createElement("ul");
+	claim_list.id = "claim_list";
+	div.append(claim_list);
+	main_div.append(div);
+	sendSearchParams({claim_ids: claim.value.claims});
 }
 
 function handlePaidContent(claim) {
 	let content_div = document.querySelector("#content_div");
 	let purchase_button = document.createElement("button");
 	purchase_button.id = "purchase_button";
-	purchase_button.innerHTML = cleanHTML("(EXPERIMENTAL: This works, but you may need to reload page or click \"Delete\"/\"Create\" for content to show)<br>Click to purchase access for " + (claim.value.fee.amount) + " LBC");
+	purchase_button.innerText = "(EXPERIMENTAL: This works, but you may need to reload page or click \"Delete\"/\"Create\" for content to show)<br>Click to purchase access for " + (claim.value.fee.amount) + " LBC";
 	let params = {
 		claim_id: claim.claim_id,
 		override_max_key_fee: false,
@@ -465,7 +467,7 @@ function handlePaidContent(claim) {
 			console.log(response);
 			if (response.error && response.error.data.name === "KeyFeeAboveMaxAllowedError")
 			{
-				purchase_button.innerHTML = cleanHTML(response.error.message + " Click to buy anyway");
+				purchase_button.innerText = response.error.message + " Click to buy anyway";
 				params.override_max_key_fee = true;
 			} else {
 				purchase_button.remove();
@@ -474,64 +476,43 @@ function handlePaidContent(claim) {
 		});
 	});
 	content_div.append(purchase_button);
-
-
 }
 
 function loadFromResolve() {
 	doACall("resolve", {urls: lbryUrl, include_purchase_receipt: true}, (response) => {
-			let obj = response;
-			obj = obj.result[lbryUrl];
-			let metadata = obj.value;
-			if (obj.value_type == "repost"){
-				obj = obj.reposted_claim;
-				metadata = obj.value;
-			}
-			if (obj.value_type === "collection") {
-				let main_div = document.querySelector("#main_div");
-				let div = document.createElement("div");
-				let claim_list = document.createElement("ul");
-				claim_list.id = "claim_list";
-				div.append(claim_list);
-				main_div.append(div);
-				sendSearchParams({claim_ids: obj.value.claims});
-			} else if (!obj.value.fee || !obj.value.fee.amount || obj.purchase_receipt) {
-				console.log("hmm");
-				lbryUrl = obj.permanent_url;
-				claim_id = obj.claim_id;
-				doACall("get", {uri: lbryUrl}, (response) => {
-					let obj = response;
-					obj = obj.result;
-					console.log(obj);
-					let mime_type = obj.mime_type;
-					if (mime_type.match(new RegExp("video/")) ||
-						mime_type.match(new RegExp("audio/")))
-						createVideo(obj, obj.metadata);
-					else if (mime_type == "text/markdown")
-						createDocument(obj, obj.metadata);
-					else if (mime_type.match(new RegExp("image/")))
-						createImage(obj, obj.metadata);
-			//	else if (mime_type.match(new RegExp("application/pdf")))
-			//		createIframe(claim, claim.value);
-			//	else if (mime_type.match(new RegExp("text/html")))
-			//		createIframe(claim, claim.value);
-				});
-			} else if (obj.value.fee) {
-				// Hande paid content
-				handlePaidContent(obj);
-			}
-			setInfo(obj, metadata);
-		
+		let obj = response;
+		let claim = obj.result[lbryUrl];
+		console.log(claim);
+		if (claim.value_type == "repost"){
+			claim = claim.reposted_claim;
+		}
+		if (claim.value_type === "collection") {
+			handleCollection(claim);
+		} else if (!claim.value.fee || !claim.value.fee.amount || claim.purchase_receipt) {
+			createContentView();
+		} else if (claim.value.fee) {
+			// Hande paid content
+			handlePaidContent(obj);
+		}
+		setInfo(claim, claim.value);
 	});
 }
 
 
-let claim = JSON.parse(localStorage.getItem(claim_id));
-if (claim && !claim.value.fee) {
-	console.log("loaded from claim");
-	loadFromClaim(claim);
-} else {
-	// Fee will be dealt in here
-	console.log("resolved");
-	loadFromResolve();
+function main_video() {
+	let claim = JSON.parse(localStorage.getItem(claim_id));
+	if (claim.value_type === "collection") {
+		handleCollection(claim);
+		setInfo(claim, claim.value);
+	}	else if (claim && !claim.value.fee) {
+		console.log("loaded from claim");
+		localStorage.removeItem(claim_id);
+		loadFromClaim(claim);
+	} else {
+		// Fee will be dealt with in here
+		console.log("resolved");
+		loadFromResolve();
+	}
 }
+
+document.addEventListener("DOMContentLoaded", () => {main_video();});

@@ -6,7 +6,7 @@ var last_page = 1;
 function listTransactions(obj) {
 	let transactions_div = document.querySelector("#transactions_div");
 	let tx_table = document.querySelector("#tx_table > tbody");
-	tx_table.innerHTML = "";
+	tx_table.innerText = "";
 	
 	obj.items.forEach((tx) => {
 		let tr = document.createElement("tr");	
@@ -21,20 +21,20 @@ function listTransactions(obj) {
 
 		var date = new Date(0);
 		date.setUTCSeconds(tx.timestamp);
-		td_date.innerHTML = cleanHTML(date.toLocaleString('en-GB', { hour12:false } ));
-		td_type.innerHTML = cleanHTML( tx.value_type ? tx.value_type : tx.type );
-		td_details.innerHTML = cleanHTML(tx.name);
+		td_date.innerText = date.toLocaleString('en-GB', { hour12:false } );
+		td_type.innerText = ( tx.value_type ? tx.value_type : tx.type );
+		td_details.innerText = tx.name)
 		if (tx.permanent_url)
-			td_details.innerHTML = cleanHTML("<a href='" + tx.permanent_url + "'>" + tx.name + "</a>");
-		td_tx.innerHTML = cleanHTML("<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>");
-		td_lbc.innerHTML = cleanHTML( tx.is_my_output ? tx.amount : (-1 * tx.amount) );
+			td_details.innerText = "<a href='" + tx.permanent_url + "'>" + tx.name + "</a>";
+		td_tx.innerText = "<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>";
+		td_lbc.innerText = ( tx.is_my_output ? tx.amount : (-1 * tx.amount) );
 
 		tr.append(td_date);
 		tr.append(td_type);
 		if ((tx.type === "support" || tx.value_type === "repost")&&
 				tx.is_my_output && !tx.is_spent) {
 			let unlock_btn = document.createElement("button");
-			unlock_btn.innerHTML = "Unlock";
+			unlock_btn.innerText = "Unlock";
 			let method = "support_abandon";
 			if (tx.value_type === "repost")
 				method = "stream_abandon";

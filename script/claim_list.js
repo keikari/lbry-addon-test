@@ -1,4 +1,259 @@
+function createChannelClaimPreview(claim, isReposted, repost_claim) {
+	const div = document.createElement("div");
+	div.classList.add("preview_div");
+	const thumbnail_div = document.createElement("div");
+	thumbnail_div.classList.add("thumbnail_div");
+	const thumbnail = document.createElement("img");
+	thumbnail.classList.add("channel_thumbnail");
+	let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
+	thumbnail.src = thumbnail_url;
+	thumbnail_div.append(thumbnail);
+	const preview_info_div = document.createElement("div");
+	preview_info_div.classList.add("preview_info_div");
+	const title = document.createElement("h3");
+	title.classList.add("title");
+	title.innerText = claim.value.title ? claim.value.title : claim.name;
+	preview_info_div.append(title);
 
+	// Release time
+	let release_text = document.createElement("p");
+	release_text.classList.add("release_time");
+	release_text.innerText = timeDifference(
+		Math.floor(Date.now()/1000),
+		claim.meta.creation_timestamp
+	);
+	preview_info_div.append(release_text);
+
+	//Uploads on channel
+	let uploads_count_text = document.createElement("p");
+	uploads_count_text.classList.add("uploads_count");
+	uploads_count_text.innerText = `${claim.meta.claims_in_channel} Uploads`;
+	preview_info_div.append(uploads_count_text);
+	
+	let preview_details_div = document.createElement("div");
+	preview_details_div.classList.add("preview_details_div");
+
+	//Staked
+	let staked = claim.meta.effective_amount;
+	let staked_text = document.createElement("label");
+	staked_text.classList.add("staked_text");
+	staked_text.innerText = `Staked: ${staked} + " LBC"`;
+	preview_details_div.append(staked_text);
+
+	// Repost info
+	if (isReposted) {
+		let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
+		let repost_channel_url = ( repost_claim.signing_channel ? repost_claim.signing_channel.permanent_url : null );
+		let repost_text_div = document.createElement("div");
+		repost_text_div.classList.add("repost_text_div");
+		let a = document.createElement("a");
+		if (repost_channel_url)
+			a.href = `channel.html?url=${repost_channel_url}`;
+		a.innerText = repost_channel_name;
+		let repost_label = document.createElement("label");
+		repost_label.innerText = "Reposted by ";
+		repost_label.append(a);
+		repost_text_div.append(repost_label);
+		preview_info_div.insertBefore(repost_text_div, preview_info_div.firstChild);
+	}
+
+	preview_info_div.append(preview_details_div);
+	div.append(thumbnail_div);
+	div.append(preview_info_div);
+	return div;
+}
+function createCollectionClaimPreview(claim, channel_claim, isReposted, repost_claim = null) {
+	const div = document.createElement("div");
+	div.classList.add("preview_div");
+	const thumbnail_div = document.createElement("div");
+	thumbnail_div.classList.add("thumbnail_div");
+	const thumbnail = document.createElement("img");
+	let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
+	thumbnail.src = thumbnail_url;
+	thumbnail_div.append(thumbnail);
+	div.append(thumbnail_div);
+	const preview_info_div = document.createElement("div");
+	preview_info_div.classList.add("preview_info_div");
+	const title = document.createElement("h3");
+	title.classList.add("title");
+	title.innerText = claim.value.title ? claim.value.title : claim.name;
+	let channel_name = null;
+	// Don't print channel name on channel's page
+	if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
+		channel_name = document.createElement("h4");
+		channel_name.classList.add("channel_name");
+		channel_name.innerText = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
+	}
+
+	// Release time
+	let release_text = document.createElement("p");
+	release_text.classList.add("release_time");
+	release_text.innerText = timeDifference(
+		Math.floor(Date.now()/1000),
+		(claim.value.release_time ? claim.value.release_time : claim.meta.creation_timestamp)
+	);
+
+	// Claims in list
+	let claim_count_text = document.createElement("p");
+	claim_count_text.classList.add("claim_count");
+	claim_count_text.innerText = `${claim.value.claims.length} claims`;
+
+	//Create details div
+	let preview_details_div = document.createElement("div");
+	preview_details_div.classList.add("preview_details_div");
+
+	//Staked
+	let staked = claim.meta.effective_amount;
+	let staked_text = document.createElement("label");
+	staked_text.classList.add("staked_text");
+	staked_text.innerText = `Staked: ${staked} LBC`;
+	preview_details_div.append(staked_text);
+
+	// Repost info
+	if (isReposted) {
+		let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
+		let repost_channel_url = ( repost_claim.signing_channel ? repost_claim.signing_channel.permanent_url : null );
+		let repost_text_div = document.createElement("div");
+		repost_text_div.classList.add("repost_text_div");
+		let a = document.createElement("a");
+		if (repost_channel_url)
+			a.href = `channel.html?url=${repost_channel_url}`;
+		a.innerText = repost_channel_name;
+		let repost_label = document.createElement("label");
+		repost_label.innerText = "Reposted by ";
+		repost_label.append(a);
+		repost_text_div.append(repost_label);
+		preview_info_div.insertBefore(repost_text_div, preview_info_div.firstChild);
+	}
+
+
+	preview_info_div.append(title);
+	if (channel_name && channel_name.innerText != "Unknown") {
+		const channel_link = document.createElement("a");
+		channel_link.href = "channel.html?url="+claim.signing_channel.permanent_url;
+		channel_link.classList.add("channel_url");
+		channel_link.append(channel_name);
+		preview_info_div.append(channel_link);
+	}
+	preview_info_div.append(release_text);
+	preview_info_div.append(preview_details_div);
+	preview_info_div.append(claim_count_text);
+	div.append(preview_info_div);
+	return div;
+
+}
+function createStreamClaimPreview(claim, channel_claim, isReposted, repost_claim = null) {
+	const div = document.createElement("div");
+	div.classList.add("preview_div");
+	const thumbnail_div = document.createElement("div");
+	thumbnail_div.classList.add("thumbnail_div");
+	const thumbnail = document.createElement("img");
+	let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
+	thumbnail.src = thumbnail_url;
+	thumbnail_div.append(thumbnail);
+	const preview_info_div = document.createElement("div");
+	preview_info_div.classList.add("preview_info_div");
+	const title = document.createElement("h3");
+	title.classList.add("title");
+	title.innerText = claim.value.title ? claim.value.title : claim.name;
+	let channel_name = null;
+	// Don't print channel name on channel's page
+	if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
+		channel_name = document.createElement("h4");
+		channel_name.classList.add("channel_name");
+		channel_name.innerText = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
+	}
+
+	// Release time
+	let release_text = document.createElement("p");
+	release_text.classList.add("release_time");
+	release_text.innerText = timeDifference(
+		Math.floor(Date.now()/1000),
+		(claim.value.release_time ? claim.value.release_time : claim.meta.creation_timestamp)
+	);
+
+	// Repost info
+	if (isReposted) {
+		let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
+		let repost_channel_url = ( repost_claim.signing_channel ? repost_claim.signing_channel.permanent_url : null );
+		let repost_text_div = document.createElement("div");
+		repost_text_div.classList.add("repost_text_div");
+		let a = document.createElement("a");
+		if (repost_channel_url)
+			a.href = `channel.html?url=${repost_channel_url}`;
+		a.innerText = repost_channel_name;
+		let repost_label = document.createElement("label");
+		repost_label.innerText = "Reposted by ";
+		repost_label.append(a);
+		repost_text_div.append(repost_label);
+		preview_info_div.insertBefore(repost_text_div, preview_info_div.firstChild);
+	}
+
+	//Create details div
+	let preview_details_div = document.createElement("div");
+	preview_details_div.classList.add("preview_details_div");
+	//Size
+	let size_text = document.createElement("label");
+	let size = (claim.value.source ? claim.value.source.size : "?");
+	size_text.innerText = (size/1000000000 >= 1 ? (size/1000000000).toFixed(2) + " GB" : (size/1000000).toFixed(2) + " MB");
+	preview_details_div.append(size_text);
+	//Duration and bitrate
+	if (claim.value.stream_type === "video" || claim.value.stream_type == "audio") {
+					var duration_text = document.createElement("label");
+					duration_text.classList.add("duration_text");
+					var duration = (claim.value.video && claim.value.video.duration ? claim.value.video.duration : 
+							(claim.value.audio && claim.value.audio.duration ? claim.value.audio.duration : 0));
+					let date = new Date(0);
+					date.setSeconds(duration);
+					let str_start = 11;
+					let str_length = 8;
+					if (duration < 3600){
+										str_start = 14; 
+										str_length = 5;
+									}
+					duration_text.innerText = date.toISOString().substr(str_start,str_length);
+					var byterate_text = document.createElement("label");
+					let byterate = 0;
+					if (duration > 0)
+							byterate = ((size/1000000)/duration).toFixed(2);
+
+					byterate_text.innerText = byterate + "MB/s";
+					preview_details_div.append(byterate_text);
+				}
+	//Media type
+	let mime_type_text = document.createElement("label");
+	mime_type_text.classList.add("mime_type_text");
+	let claim_mime_type = (claim.value.source ? claim.value.source.media_type : "Unknown");
+	mime_type_text.innerText = claim_mime_type;
+	preview_details_div.append(mime_type_text);
+
+	//Price 
+	let price = (claim.value.fee ? claim.value.fee.amount
+		? claim.value.fee.amount 
+		: "Free": "Free");
+	let price_text = document.createElement("label");
+	price_text.classList.add("price_text");
+	price_text.innerText = (price === "Free" ? "Free" : "Fee: " +  price + " LBC");
+	preview_details_div.append(price_text);
+
+	if (claim.value.stream_type == "video" || claim.value.stream_type == "audio")
+		thumbnail_div.append(duration_text);
+
+	div.append(thumbnail_div);
+	preview_info_div.append(title);
+	if (channel_name && channel_name.innerText != "Unknown") {
+		const channel_link = document.createElement("a");
+		channel_link.href = "channel.html?url="+claim.signing_channel.permanent_url;
+		channel_link.classList.add("channel_url");
+		channel_link.append(channel_name);
+		preview_info_div.append(channel_link);
+	}
+	preview_info_div.append(release_text);
+	preview_info_div.append(preview_details_div);
+	div.append(preview_info_div);
+	return div;
+
+}
 function sendSearchParams(search_params, channel_claim) {
 	search_params.page = 1;
 	search_params.has_source = true;
@@ -31,15 +286,16 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		if (claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
 			return;
 		}
-		let reposted = false;
+		let isReposted = false;
 		if (claim.value_type == "repost") {
 			var repost_claim = claim;
 			claim = claim.reposted_claim;
-			reposted = true;
+			isReposted = true;
 			if(!claim)
 				return;
 		}
 
+		// Check that claim isn't in filter or block list
 		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
 			return;
 		}
@@ -47,112 +303,31 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		// Just create this in somewhere
 		const li = document.createElement("li");
 		li.classList.add("claim_item");
+		if (isReposted)
+			li.classList.add("repost");
+		if (!(!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) || !claim.is_channel_signature_valid) {
+			li.classList.add("no_channel");
+		} else {
+			li.classList.add("has_channel");
+		}
+
+
 
 		const a = document.createElement("a");
-		if (claim.value_type != "channel")
+		let preview_div = "";
+		if (claim.value_type == "stream") {
+			preview_div = createStreamClaimPreview(claim, channel_claim, isReposted, repost_claim);
 			a.href = "video.html?url="+claim.permanent_url;
-		else 
+		} else if (claim.value_type == "channel") {
+			preview_div = createChannelClaimPreview(claim, isReposted, repost_claim);
 			a.href = "channel.html?url="+claim.permanent_url;
+		} else if (claim.value_type == "collection") {
+			preview_div = createCollectionClaimPreview(claim, channel_claim, isReposted, repost_claim);
+			a.href = "video.html?url="+claim.permanent_url; // Also hadles collections
+		}
 		a.onclick = () => {
-			window.localStorage.setItem(claim.claim_id, JSON.stringify(claim)); // Decoding from link is necessary
+			window.localStorage.setItem(claim.claim_id, JSON.stringify(claim)); // This is used to speed up the loading of page
 		}
-		const div = document.createElement("div");
-		div.classList.add("preview_div");
-		const thumbnail_div = document.createElement("div");
-		thumbnail_div.classList.add("thumbnail_div");
-		const thumbnail = document.createElement("img");
-		let thumbnail_url = (claim.value.thumbnail ? claim.value.thumbnail.url : "") ;
-		thumbnail.src = thumbnail_url;
-		const preview_info_div = document.createElement("div");
-		preview_info_div.classList.add("preview_info_div");
-		const title = document.createElement("h3");
-		title.classList.add("title");
-		title.innerHTML = cleanHTML(claim.value.title);
-		let channel_name = null;
-		// Don't print channel name on channel's page
-		if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
-			channel_name = document.createElement("h4");
-			channel_name.classList.add("channel_name");
-			channel_name.innerHTML = cleanHTML((claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown"));
-		} else {
-			li.classList.add("no_channel");
-		}
-
-		//Create details div
-		let preview_details_div = document.createElement("div");
-		preview_details_div.classList.add("preview_details_div");
-		// Release time
-		let release_text = document.createElement("p");
-		release_text.classList.add("release_time");
-		release_text.innerHTML = cleanHTML(timeDifference(
-			Math.floor(Date.now()/1000),
-			(claim.value.release_time ? claim.value.release_time : claim.meta.creation_timestamp)
-		));
-		//Size
-		let size_text = document.createElement("label");
-		let size = (claim.value.source ? claim.value.source.size : "?");
-		size_text.innerHTML = cleanHTML(size/1000000000 >= 1 ? (size/1000000000).toFixed(2) + " GB" : (size/1000000).toFixed(2) + " MB");
-		preview_details_div.append(size_text);
-		//Duration and bitrate
-		if (claim.value.stream_type === "video" || claim.value.stream_type == "audio") {
-			var duration_text = document.createElement("label");
-			duration_text.classList.add("duration_text");
-			var duration = (claim.value.video && claim.value.video.duration ? claim.value.video.duration : 
-				(claim.value.audio && claim.value.audio.duration ? claim.value.audio.duration : 0));
-			let date = new Date(0);
-			date.setSeconds(duration);
-			let str_start = 11;
-			let str_length = 8;
-			if (duration < 3600){
-				str_start = 14; 
-				str_length = 5;
-			}
-			duration_text.innerHTML = date.toISOString().substr(str_start,str_length);
-			var byterate_text = document.createElement("label");
-			let byterate = 0;
-			if (duration > 0)
-				byterate = ((size/1000000)/duration).toFixed(2);
-
-			byterate_text.innerHTML = byterate + "MB/s";
-			preview_details_div.append(byterate_text);
-		}
-		//Media type
-		let mime_type_text = document.createElement("label");
-		mime_type_text.classList.add("mime_type_text");
-		let claim_mime_type = (claim.value.source ? claim.value.source.media_type : "Unknown");
-		mime_type_text.innerHTML = cleanHTML(claim_mime_type);
-		preview_details_div.append(mime_type_text);
-
-		//Price 
-		let price = (claim.value.fee ? claim.value.fee.amount
-			? claim.value.fee.amount 
-			: "Free": "Free");
-		let price_text = document.createElement("label");
-		price_text.classList.add("price_text");
-		price_text.innerHTML = cleanHTML((price === "Free" ? "Free" : price + " LBC"));
-		price_text.style = "float: right; margin-right: 5px; text-align:right";
-		preview_details_div.append(price_text);
-
-		// Repost info
-		if (reposted) {
-			let repost_channel_name = ( repost_claim.signing_channel ? repost_claim.signing_channel.name : "Unknown" );
-			let repost_channel_url = ( repost_claim.signing_channel ? repost_claim.signing_channel.permanent_url : null );
-			let repost_text_div = document.createElement("div");
-			repost_text_div.classList.add("repost_text_div");
-			let a = document.createElement("a");
-			if (repost_channel_url)
-				a.href = `channel.html?url=${repost_channel_url}`;
-			a.innerHTML = cleanHTML(repost_channel_name);
-			let repost_label = document.createElement("label");
-			repost_label.innerHTML = "Reposted by ";
-			repost_label.append(a);
-			repost_text_div.append(repost_label);
-			preview_info_div.insertBefore(repost_text_div, preview_info_div.firstChild);
-
-			li.classList.add("repost");
-
-		}
-
 		// Make cliking hr show/hide the claim JSON
 		const hr_div = document.createElement("div");
 		const hr = document.createElement("hr");
@@ -175,22 +350,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		});
 		hr_div.append(hr);
 
-		thumbnail_div.append(thumbnail);
-		if (claim.value.stream_type == "video" || claim.value.stream_type == "audio")
-			thumbnail_div.append(duration_text);
-		div.append(thumbnail_div);
-		preview_info_div.append(title);
-		if (channel_name && channel_name.innerHTML != "Unknown") {
-			const channel_link = document.createElement("a");
-			channel_link.href = "channel.html?url="+claim.signing_channel.permanent_url;
-			channel_link.classList.add("channel_url");
-			channel_link.append(channel_name);
-			preview_info_div.append(channel_link);
-		}
-		preview_info_div.append(release_text);
-		preview_info_div.append(preview_details_div);
-		div.append(preview_info_div);
-		a.append(div);
+		a.append(preview_div);
 		li.append(a);
 		ul.append(li);
 		ul.append(hr_div);
