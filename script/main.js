@@ -8,7 +8,7 @@ var localStorage = window.localStorage;
 function createCategoryItem(name) {
 	let category_list_item = document.createElement("p");
 	category_list_item.id = "category_list_item";
-	category_list_item.innerHTML = name;
+	category_list_item.innerHTML = cleanHTML(name);
 	if (name == "Manage Categories")
 		category_list_item.onclick = () => { iframe.src = "manage_categories.html"};
 	else 
@@ -34,13 +34,16 @@ function listCategories() {
 
 	items.forEach( (item) => {side_bar_div.append(item)} );
 
-	// Toggle sidebar (don't ask, it works)
+	// Toggle sidebar
 	let side_bar_toggle_btn = document.querySelector("#toggle_side_bar_div");
+	let hide_btn_text = document.querySelector("#hide_btn_text");
 	console.log(localStorage.getItem("side_bar_hidden"));
 	side_bar_div.hidden = localStorage.getItem("side_bar_hidden") === "true";
 	if (!side_bar_div.hidden) {
 		side_bar_div.style.display = "inline-block";
+		hide_btn_text.style.opacity = 1.0;
 	} else {
+		hide_btn_text.style.opacity = 0.0;
 		iframe.classList.remove("side_bar_visible");
 		iframe.classList.add("side_bar_hidden");
 	}
@@ -48,12 +51,16 @@ function listCategories() {
 		if (!side_bar_div.style.display) {
 			localStorage.setItem("side_bar_hidden", false);
 			side_bar_div.hidden = !side_bar_div.hidden;
+			hide_btn_text.style.opacity = 1.0;
 			side_bar_div.style.display = "inline-block";
+			hide_btn_text.style.display = "inline";
 			iframe.classList.remove("side_bar_hidden");
 			iframe.classList.add("side_bar_visible");
 		} else {
 			side_bar_div.style.display = "";
+			hide_btn_text.style.display = "";
 			side_bar_div.hidden = !side_bar_div.hidden;
+			hide_btn_text.style.opacity = 0.0;
 			localStorage.setItem("side_bar_hidden", true);
 			iframe.classList.remove("side_bar_visible");
 			iframe.classList.add("side_bar_hidden");
@@ -67,7 +74,7 @@ function updateWalletBalance() {
 	doACall("wallet_balance", {}, (response) => {
 		let available_balance = parseFloat(response.result.available).toFixed(2).toString();
 		let total_balance = parseFloat(response.result.total).toFixed(2).toString();
-		wallet_btn.innerHTML = available_balance + "/" + total_balance  + " LBC";
+		wallet_btn.innerHTML = cleanHTML(available_balance + "/" + total_balance  + " LBC");
 	});
 }
 

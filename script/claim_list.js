@@ -67,13 +67,13 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		preview_info_div.classList.add("preview_info_div");
 		const title = document.createElement("h3");
 		title.classList.add("title");
-		title.innerHTML = claim.value.title;
+		title.innerHTML = cleanHTML(claim.value.title);
 		let channel_name = null;
 		// Don't print channel name on channel's page
 		if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
 			channel_name = document.createElement("h4");
 			channel_name.classList.add("channel_name");
-			channel_name.innerHTML = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
+			channel_name.innerHTML = cleanHTML((claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown"));
 		} else {
 			li.classList.add("no_channel");
 		}
@@ -84,14 +84,14 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		// Release time
 		let release_text = document.createElement("p");
 		release_text.classList.add("release_time");
-		release_text.innerHTML = timeDifference(
+		release_text.innerHTML = cleanHTML(timeDifference(
 			Math.floor(Date.now()/1000),
 			(claim.value.release_time ? claim.value.release_time : claim.meta.creation_timestamp)
-		);
+		));
 		//Size
 		let size_text = document.createElement("label");
 		let size = (claim.value.source ? claim.value.source.size : "?");
-		size_text.innerHTML = (size/1000000000 >= 1 ? (size/1000000000).toFixed(2) + " GB" : (size/1000000).toFixed(2) + " MB");
+		size_text.innerHTML = cleanHTML(size/1000000000 >= 1 ? (size/1000000000).toFixed(2) + " GB" : (size/1000000).toFixed(2) + " MB");
 		preview_details_div.append(size_text);
 		//Duration and bitrate
 		if (claim.value.stream_type === "video" || claim.value.stream_type == "audio") {
@@ -120,7 +120,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		let mime_type_text = document.createElement("label");
 		mime_type_text.classList.add("mime_type_text");
 		let claim_mime_type = (claim.value.source ? claim.value.source.media_type : "Unknown");
-		mime_type_text.innerHTML = claim_mime_type;
+		mime_type_text.innerHTML = cleanHTML(claim_mime_type);
 		preview_details_div.append(mime_type_text);
 
 		//Price 
@@ -129,7 +129,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			: "Free": "Free");
 		let price_text = document.createElement("label");
 		price_text.classList.add("price_text");
-		price_text.innerHTML = (price === "Free" ? "Free" : price + " LBC");
+		price_text.innerHTML = cleanHTML((price === "Free" ? "Free" : price + " LBC"));
 		price_text.style = "float: right; margin-right: 5px; text-align:right";
 		preview_details_div.append(price_text);
 
@@ -142,7 +142,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 			let a = document.createElement("a");
 			if (repost_channel_url)
 				a.href = `channel.html?url=${repost_channel_url}`;
-			a.innerHTML = repost_channel_name;
+			a.innerHTML = cleanHTML(repost_channel_name);
 			let repost_label = document.createElement("label");
 			repost_label.innerHTML = "Reposted by ";
 			repost_label.append(a);

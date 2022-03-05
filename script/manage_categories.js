@@ -115,7 +115,7 @@ function populateCategorySelector(selector_id) {
 		category_names.forEach((name) => {
 			option = document.createElement("option");
 			option.value = name;
-			option.innerHTML = name;
+			option.innerHTML = cleanHTML(name);
 			selector.append(option);
 		});
 	}
@@ -154,7 +154,7 @@ function getText(e, elem) {
 			text = elem.value;
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
-			preview_text.innerHTML = text + " X";
+			preview_text.innerHTML = cleanHTML(text + " X");
 			preview_text.onclick = () => {
 				search_params[elem.id] = null;
 				preview_text.remove();
@@ -176,7 +176,7 @@ function getNumber(e, elem) {
 			search_params[elem.id] = parseInt(text);
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
-			preview_text.innerHTML = text + " X";
+			preview_text.innerHTML = cleanHTML(text + " X");
 			preview_text.onclick = () => {
 				search_params[elem.id] = null;
 				preview_text.remove();
@@ -220,7 +220,7 @@ function getChannelUrl(e) {
 
 					let preview_text = document.createElement("label");
 					preview_text.classList.add("preview_option");
-					preview_text.innerHTML = lbry_url + " X";
+					preview_text.innerHTML = cleanHTML(lbry_url + " X");
 					preview_text.onclick = () => {
 						preview_text.remove();
 						console.log("id: " + this.id);
@@ -249,6 +249,7 @@ function getOrderBy() {
 
 		if (this.is_ascending) {
 			this.is_ascending = false;
+			text = cleanHTML(text);
 			preview_text.innerHTML = "^" + text + " X";
 			preview_text.value = "^" + text;
 			order_button.innerHTML = "ASC";
@@ -277,7 +278,7 @@ function getOrderBy() {
 				}
 					search_params.order_by[i] = order;
 					preview_text.value = order;
-					preview_text.innerHTML = order + " X";
+					preview_text.innerHTML = cleanHTML(order + " X");
 					return;
 			}
 		}
@@ -328,7 +329,7 @@ function getTextArray(e, elem) {
 				search_params[search_param] = array_items;
 				let preview_text = document.createElement("label");
 				preview_text.classList.add("preview_option");
-				preview_text.innerHTML = text + " X";
+				preview_text.innerHTML = cleanHTML(text + " X");
 				preview_text.onclick = () => {
 					preview_text.remove();
 					search_params[search_param].splice(search_params[search_param].indexOf(text), 1);

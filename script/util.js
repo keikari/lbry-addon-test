@@ -1,3 +1,8 @@
+function cleanHTML(text) {
+	return DOMPurify.sanitize(text, { USE_PROFILES: { html: true } });
+}
+
+
 function itemInArray(item, array) {
 	let L = 0;
 	let R = array.length - 1;
@@ -17,7 +22,7 @@ function itemInArray(item, array) {
 	let notification_list = window.parent.document.querySelector("#notification_list");
 	let notification_item = document.createElement("li");
 	notification_item.classList.add("notification_item");
-	notification_item.innerHTML = text;
+	notification_item.innerHTML = cleanHTML(text);
 
 	notification_item.onclick = () => notification_item.remove();
 
@@ -32,7 +37,7 @@ function itemInArray(item, array) {
 			} else {
 				count = 2;
 			}
-			notification_item.innerHTML = text + "(" + count.toString() + ")";
+			notification_item.innerHTML = cleanHTML(text + "(" + count.toString() + ")");
 			notification.remove();
 			break;
 		}

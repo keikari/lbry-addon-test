@@ -21,13 +21,13 @@ function listTransactions(obj) {
 
 		var date = new Date(0);
 		date.setUTCSeconds(tx.timestamp);
-		td_date.innerHTML = date.toLocaleString('en-GB', { hour12:false } );
-		td_type.innerHTML = ( tx.value_type ? tx.value_type : tx.type );
-		td_details.innerHTML = tx.name;
+		td_date.innerHTML = cleanHTML(date.toLocaleString('en-GB', { hour12:false } ));
+		td_type.innerHTML = cleanHTML( tx.value_type ? tx.value_type : tx.type );
+		td_details.innerHTML = cleanHTML(tx.name);
 		if (tx.permanent_url)
-			td_details.innerHTML = "<a href='" + tx.permanent_url + "'>" + tx.name + "</a>";
-		td_tx.innerHTML = "<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>";
-		td_lbc.innerHTML = ( tx.is_my_output ? tx.amount : (-1 * tx.amount) );
+			td_details.innerHTML = cleanHTML("<a href='" + tx.permanent_url + "'>" + tx.name + "</a>");
+		td_tx.innerHTML = cleanHTML("<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>");
+		td_lbc.innerHTML = cleanHTML( tx.is_my_output ? tx.amount : (-1 * tx.amount) );
 
 		tr.append(td_date);
 		tr.append(td_type);

@@ -70,7 +70,7 @@ function createChannelSelector() {
 		response.result.items.forEach((item) => {
 			let option = document.createElement("option");
 			option.value = item.claim_id;
-			option.innerHTML = item.name + ":" + item.claim_id.substr(0,1);
+			option.innerHTML = cleanHTML(item.name + ":" + item.claim_id.substr(0,1));
 			channel_selector.append(option);
 		});
 	});
@@ -285,7 +285,7 @@ function createDocument(obj, metadata) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4 && xhr.status === 206) {
 			let content_div = document.querySelector("#content_div");
-			content_div.innerHTML = markdown(xhr.response);
+			content_div.innerHTML = cleanHTML(markdown(xhr.response));
 			content_div.classList.add("document_div");
 		} else if (xhr.readyState === 4 && xhr.status === 404 && !tried) {
 			xhr.open("GET", get_url, true);
@@ -351,7 +351,7 @@ function setInfo(obj, metadata) {
 	let channel_text = document.createElement("h4");
 	channel_text.id = "channel_text";
 	channel_link.href = "channel.html?url="+channel_url;
-	channel_text.innerHTML = channel;
+	channel_text.innerHTML = cleanHTML(channel);
 	channel_link.append(channel_text);
 	info_div.append(channel_link);
 
@@ -361,14 +361,14 @@ function setInfo(obj, metadata) {
 	let url = obj.canonical_url.replaceAll('#', ':');
 	if (!obj.is_channel_signature_valid)
 		url = obj.short_url;
-	url_text.innerHTML = url;
+	url_text.innerHTML = cleanHTML(url);
 	info_div.append(url_text);
 
 	// Claim_id
 	let claim_id_text = document.createElement("p");
 	claim_id_text.id = "claim_id_text";
 	let claim_id = obj.claim_id;
-	claim_id_text.innerHTML = claim_id;
+	claim_id_text.innerHTML = cleanHTML(claim_id);
 	info_div.append(claim_id_text);
 
 	details_div.append(info_div);
@@ -388,7 +388,7 @@ function setInfo(obj, metadata) {
 	let LBC_text = document.createElement("p");
 	LBC_text.id = "LBC_text";
 	let LBC_amount = parseFloat(obj.meta.support_amount) + parseFloat(obj.amount);
-	LBC_text.innerHTML = LBC_amount.toFixed(2).toString() + " LBC";
+	LBC_text.innerHTML = cleanHTML(LBC_amount.toFixed(2).toString() + " LBC");
 
 	right_div.append(LBC_text);
 
@@ -415,13 +415,13 @@ function setInfo(obj, metadata) {
 	let description = metadata.description;
 	if (description) {
 		description_div = document.querySelector("#description_div");
-		description_div.innerHTML = markdown(description);
+		description_div.innerHTML = cleanHTML(markdown(description));
 		let timestamps = description_div.querySelectorAll(".timestamp");
 		timestamps.forEach((timestamp) => {
 			let video = document.querySelector("video");
 			let times = timestamp.innerText.match(/([0-9]{1,2}):([0-9]{2}):([0-9]{2})|([0-9]{1,2}):([0-9]{2})[^:]?/);
 			let time = parseInt(((times[1] | 0) * 3600)) + parseInt((( (times[2]| 0) + (times[4] | 0) ) * 60)) + parseInt((times[3]|0) + (times[5]|0));
-			timestamp.innerHTML = "<u>" + timestamp.innerHTML + "</u>";
+			timestamp.innerHTML = cleanHTML("<u>" + timestamp.innerText + "</u>");
 			timestamp.onclick = () => {video.currentTime = time; video.play();};
 		});
 		//description_div.classList.add("text_div");
@@ -455,7 +455,7 @@ function handlePaidContent(claim) {
 	let content_div = document.querySelector("#content_div");
 	let purchase_button = document.createElement("button");
 	purchase_button.id = "purchase_button";
-	purchase_button.innerHTML = "(EXPERIMENTAL: This works, but you may need to reload page or click \"Delete\"/\"Create\" for content to show)<br>Click to purchase access for " + (claim.value.fee.amount) + " LBC";
+	purchase_button.innerHTML = cleanHTML("(EXPERIMENTAL: This works, but you may need to reload page or click \"Delete\"/\"Create\" for content to show)<br>Click to purchase access for " + (claim.value.fee.amount) + " LBC");
 	let params = {
 		claim_id: claim.claim_id,
 		override_max_key_fee: false,
@@ -465,7 +465,7 @@ function handlePaidContent(claim) {
 			console.log(response);
 			if (response.error && response.error.data.name === "KeyFeeAboveMaxAllowedError")
 			{
-				purchase_button.innerHTML = response.error.message + " Click to buy anyway";
+				purchase_button.innerHTML = cleanHTML(response.error.message + " Click to buy anyway");
 				params.override_max_key_fee = true;
 			} else {
 				purchase_button.remove();

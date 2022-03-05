@@ -60,12 +60,20 @@ body {
 	height: 100%;
 	display: inline-block;
 }
+#toggle_side_bar_div > p{
+	position: relative;
+	display: inline;
+	top: 32%;
+	padding: 5px;
+	opacity: 0.0;
+}
 #side_bar {
 	width: 8%;
 	height: 100%;
 	background:#444;
 	padding: 51px 0;
 	margin: 0px;
+	box-shadow: 0 0 3px black;
 }
 #category_list_item {
 	position: relative;
@@ -73,7 +81,8 @@ body {
 	text-align:center;
 	background:#222;
 	padding: 10px;
-	margin: 1px;
+	margin: 5px;
+	box-shadow: 0 0 3px black;
 }
 #floating_player_div,#floating_player {
 	position:fixed;

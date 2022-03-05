@@ -8,7 +8,11 @@ JSONViewer https://github.com/LorDOniX/json-viewer
 	
 drawdown https://github.com/adamvleggett/drawdown  
 - Copyright (c) 2016 Adam Leggett
-- MIT License
+- [MIT License](https://github.com/adamvleggett/drawdown/blob/master/LICENSE)
+
+DOMPurify https://github.com/cure53/DOMPurify  
+- Copyright 2015 Mario Heiderich  
+- [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 
 
 <hr> 
  
@@ -29,7 +33,7 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 #### Features:
 - search
 - advanced search options(can be stored as a "categories")
-- view video, audio, markdown(needs polishing), pdf and image files
+- view video, audio, markdown(needs polishing) and image files
 - repost
 - tip/support
 - follows(kind of, this uses your "local" prefrences from lbry app)

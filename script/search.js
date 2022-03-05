@@ -27,8 +27,8 @@ function createMostSupported(claim) {
 	if (claim.value_type === "channel")
 		thumbnail_elem.classList.add("channel");
 	thumbnail_elem.src = (data.thumbnail ? data.thumbnail.url : "");
-	title_elem.innerHTML = (data.title ? data.title : claim.name);
-	release_time_elem.innerHTML = (data.release_time ? data.release_time : claim.meta.creation_timestamp);
+	title_elem.innerHTML = cleanHTML(data.title ? data.title : claim.name);
+	release_time_elem.innerHTML = cleanHTML(data.release_time ? data.release_time : claim.meta.creation_timestamp);
 
 	community_choice_div.append(thumbnail_elem);
 	community_choice_div.append(title_elem);
