@@ -37,7 +37,7 @@ function createChannelClaimPreview(claim, isReposted, repost_claim) {
 	let staked = claim.meta.effective_amount;
 	let staked_text = document.createElement("label");
 	staked_text.classList.add("staked_text");
-	staked_text.innerText = `Staked: ${staked} + " LBC"`;
+	staked_text.innerText = `Staked: ${staked} LBC`;
 	preview_details_div.append(staked_text);
 
 	// Repost info
@@ -305,9 +305,9 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		li.classList.add("claim_item");
 		if (isReposted)
 			li.classList.add("repost");
-		if (!(!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) || !claim.is_channel_signature_valid) {
+		if (!(!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) || claim.is_channel_signature_valid === false) {
 			li.classList.add("no_channel");
-		} else {
+		} else if (!claim.value_type != "channel"){
 			li.classList.add("has_channel");
 		}
 
