@@ -297,7 +297,7 @@ function createDocument(obj, metadata) {
 
 }
 
-function createPdf(obj, metadata) {
+function createIframe(obj, metadata) {
 	let name = obj.name || obj.claim_name;
 	let get_url = 'http://localhost:5280/get/'+name+":"+obj.claim_id;
 	let content_div = document.querySelector("#content_div");
@@ -358,7 +358,7 @@ function setInfo(obj, metadata) {
 	// URL
 	let url_text = document.createElement("p");
 	url_text.id = "url_text";
-	let url = obj.canonical_url;
+	let url = obj.canonical_url.replaceAll('#', ':');
 	if (!obj.is_channel_signature_valid)
 		url = obj.short_url;
 	url_text.innerHTML = url;
@@ -443,10 +443,10 @@ function loadFromClaim(claim) {
 		createDocument(claim, claim.value);
 	else if (mime_type.match(new RegExp("image/")))
 		createImage(claim, claim.value);
-	else if (mime_type.match(new RegExp("application/pdf")))
-		createPdf(claim, claim.value);
-	//	else if (mime_type.match(new RegExp("text/html")))
-	//		createPdf(claim, claim.value);
+//	else if (mime_type.match(new RegExp("application/pdf")))
+//		createIframe(claim, claim.value);
+//	else if (mime_type.match(new RegExp("text/html")))
+//		createIframe(claim, claim.value);
 
 	setInfo(claim, claim.value);
 }
@@ -511,15 +511,15 @@ function loadFromResolve() {
 						createDocument(obj, obj.metadata);
 					else if (mime_type.match(new RegExp("image/")))
 						createImage(obj, obj.metadata);
-					else if (mime_type.match(new RegExp("application/pdf")))
-						createPdf(obj, obj.metadata);
+			//	else if (mime_type.match(new RegExp("application/pdf")))
+			//		createIframe(claim, claim.value);
+			//	else if (mime_type.match(new RegExp("text/html")))
+			//		createIframe(claim, claim.value);
 				});
 			} else if (obj.value.fee) {
 				// Hande paid content
 				handlePaidContent(obj);
 			}
-
-			
 			setInfo(obj, metadata);
 		
 	});

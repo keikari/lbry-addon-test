@@ -66,6 +66,9 @@ a {
 	margin: 0px;
 	overflow-wrap: anywhere;
 }
+#description_div img {
+	max-width: 80%;
+}
 #LBC_text {
 	position: relative;
 	top: 76px;
