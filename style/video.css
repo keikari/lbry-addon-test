@@ -29,7 +29,7 @@ a {
 #details_div {
 	color: #fff;
 	background: #222222;
-	padding: 0px 10px;
+	padding: 0px 20px;
 	position:relative;
 	box-shadow: 0 0 3px black;
 }
@@ -60,7 +60,7 @@ a {
 #description_div {
 	background: #222222;
 	box-shadow: 0 0 3px black;
-	padding: 10px;
+	padding: 10px 30px;
 }
 #description_div * {
 	margin: 0px;

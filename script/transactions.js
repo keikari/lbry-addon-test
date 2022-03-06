@@ -23,10 +23,11 @@ function listTransactions(obj) {
 		date.setUTCSeconds(tx.timestamp);
 		td_date.innerText = date.toLocaleString('en-GB', { hour12:false } );
 		td_type.innerText = ( tx.value_type ? tx.value_type : tx.type );
-		td_details.innerText = tx.name)
-		if (tx.permanent_url)
-			td_details.innerText = "<a href='" + tx.permanent_url + "'>" + tx.name + "</a>";
-		td_tx.innerText = "<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>";
+		td_details.innerText = tx.name;
+		if (tx.permanent_url) {
+			td_details.innerHTML = cleanHTML("<a href='" + tx.permanent_url + "'>" + tx.name + "</a>");
+		}
+		td_tx.innerHTML = cleanHTML("<a href='https://explorer.lbry.com/tx/" + tx.txid + "#output-" + tx.nout + "'>" + tx.txid.substr(0,8) + "</a>");
 		td_lbc.innerText = ( tx.is_my_output ? tx.amount : (-1 * tx.amount) );
 
 		tr.append(td_date);

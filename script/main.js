@@ -2,7 +2,6 @@ var lbryUrl = document.URL.match(new RegExp(/lbry:\/\/.*/))[0];
 lbryUrl = decodeURIComponent(lbryUrl);
 let server = "http://localhost";
 var iframe;
-var currentSrc;
 var localStorage = window.localStorage;
 
 function createCategoryItem(name) {
@@ -11,7 +10,7 @@ function createCategoryItem(name) {
 	category_list_item.innerText = name;
 	if (name == "Manage Categories")
 		category_list_item.onclick = () => { iframe.src = "manage_categories.html"};
-	else 
+	else
 		category_list_item.onclick = () => { iframe.src = "category.html?category_name="+name  };
 	return category_list_item;
 }
@@ -163,14 +162,46 @@ function hmm() {
 		}
 	};
 	xhr.send();
-	
+
+}
+
+function handleFloatingPlayer(interval_id = null) {
+	console.log(`interval_id: ${interval_id}`);
+	let video = iframe.contentWindow.document.querySelector("video");
+	let isVideoPage = iframe.contentWindow.document.documentURI.match("video.html");;
+	console.log(`isVideopage: ${Boolean(isVideoPage)}`);
+	if (!video && isVideoPage) {
+		if (interval_id == null) {
+			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 200);
+			setTimeout(() => clearInterval(interval_id), 5000); // Wait video for max 5s
+		}
+	} else if (video) {
+		clearInterval(interval_id);
+		let sd_hash = video.sd_hash;
+		floating_player = document.querySelector("#floating_player");
+		if (floating_player.sd_hash == sd_hash) {
+			floatToMainPlayer(video);
+		} else if (floating_player.src || floating_player.querySelector("source")) {
+			video.onplay = () => {floatToMainPlayer(video)};
+		}
+		let body = iframe.contentWindow.document.querySelector("body");
+		body.onunload = () => {
+			video = iframe.contentWindow.document.querySelector("video");
+			if (video) {
+				let time = video.currentTime;
+				console.log("Time: " + time);
+				if (!video.paused)
+					moveVideoToFloatingPlayer(sd_hash, time)
+			}
+		};
+	}
+
 }
 
 window.onload = () => {
 	iframe = document.querySelector("iframe");
 	let page = getClaimTypeFromUrl(lbryUrl);
 	console.log("window loaded");
-
 
 	listCategories();
 
@@ -179,36 +210,13 @@ window.onload = () => {
 	floating_player.style.height = 0;
 
 	let count = 0;
-	iframe.onload = function getVideoIframe() {
-		let video = iframe.contentWindow.document.querySelector("video");
-		if (!video && count < 30) {
-			setTimeout(getVideoIframe, 100);
-			count++;
-			return;
-		} else if (video) {
-			let sd_hash = video.sd_hash;
-			floating_player = document.querySelector("#floating_player");
-			if (floating_player.sd_hash == sd_hash) {
-				floatToMainPlayer(video);
-			} else if (floating_player.src || floating_player.querySelector("source")) {
-				console.log("video on play");
-				video.onplay = () => {floatToMainPlayer(video)};
-			}
-			let body = iframe.contentWindow.document.querySelector("body");
-			body.onunload = () => {
-				video = iframe.contentWindow.document.querySelector("video");
-				let time = video.currentTime;
-				console.log("Time: " + time);
-				if (!video.paused)
-					moveVideoToFloatingPlayer(sd_hash, time)
-			};
-		} 
+	handleFloatingPlayer();
 
-		console.log("Iframe loaded");
+	iframe.onload = function () {
+		handleFloatingPlayer();
 		updateWalletBalance();
 		listCategories();
 		count = 0;
-		
 	};
 
 	//Load start page
@@ -227,7 +235,7 @@ window.onload = () => {
 	doACall("wallet_status", {}, (response) => {
 		if (response.result.is_locked) {
 			wallet_btn.innerText = "Wallet(Locked)";
-			unlock_btn.onclick = () => { 
+			unlock_btn.onclick = () => {
 				let password_input = document.querySelector("#password_input");
 				if (password_input) {
 					password_input.remove();
@@ -251,7 +259,7 @@ window.onload = () => {
 				document.body.append(password_input);
 				password_input.focus();
 			};
-			
+
 		} else {
 			unlock_btn.remove();
 		}

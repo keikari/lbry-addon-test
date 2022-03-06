@@ -501,7 +501,7 @@ function loadFromResolve() {
 
 function main_video() {
 	let claim = JSON.parse(localStorage.getItem(claim_id));
-	if (claim.value_type === "collection") {
+	if (claim && claim.value_type === "collection") {
 		handleCollection(claim);
 		setInfo(claim, claim.value);
 	}	else if (claim && !claim.value.fee) {
