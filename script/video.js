@@ -222,10 +222,11 @@ function createSupportButton(claim) {
 			}
 			if (channel_selector.value != "")
 				params.channel_id = channel_selector.value;
-			doACall("support_create", params);
-			addNotification(`Supported claim with ${amount} LBC`, 5000)
-			support_div.remove()
-			button.disabled = false;
+			doACall("support_create", params, () => {
+				addNotification(`Supported claim with ${amount} LBC`, 5000)
+				support_div.remove()
+				button.disabled = false;
+			});
 		};
 
 		tip_button.onclick = () => {
@@ -237,10 +238,11 @@ function createSupportButton(claim) {
 			}
 			if (channel_selector.value != "")
 				params.channel_id = channel_selector.value;
-			doACall("support_create", params);
-			addNotification(`Tipped ${amount} LBC`, 5000)
-			support_div.remove()
-			button.disabled = false;
+			doACall("support_create", params, () => {
+				addNotification(`Tipped ${amount} LBC`, 5000)
+				support_div.remove()
+				button.disabled = false;
+			});
 		};
 
 
