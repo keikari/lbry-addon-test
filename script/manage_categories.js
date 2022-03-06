@@ -1,7 +1,6 @@
-let search_params = {};
-let not_tags = [];
-let server = "http://localhost:5279";
-let xhr = new XMLHttpRequest();
+var category_search_params = {
+	use_default_not_tags: true,
+};
 
 function loadCategory() {
 	let text_area = document.querySelector("textarea");
@@ -28,7 +27,7 @@ function loadCategory() {
 		if (input.type === "checkbox")
 			input.checked = false;
 	});
-	search_params = {};
+	category_search_params = {};
 
 	Object.keys(category_params).forEach( (key) => {
 		console.log(key + ": " + category_params[key]);
@@ -150,13 +149,13 @@ function getText(e, elem) {
 				else
 					text = first_char + (elem.value.substr(1) * 100000000).toString();
 			}
-			search_params[elem.id] = text;
+			category_search_params[elem.id] = text;
 			text = elem.value;
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
 			preview_text.innerText = text + " X";
 			preview_text.onclick = () => {
-				search_params[elem.id] = null;
+				category_search_params[elem.id] = null;
 				preview_text.remove();
 				elem.hidden = false;
 				elem.focus();
@@ -173,12 +172,12 @@ function getNumber(e, elem) {
 		//let elem = document.querySelector(elem_id);
 		let text = elem.value;
 		if (text) {
-			search_params[elem.id] = parseInt(text);
+			category_search_params[elem.id] = parseInt(text);
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
 			preview_text.innerText = text + " X";
 			preview_text.onclick = () => {
-				search_params[elem.id] = null;
+				category_search_params[elem.id] = null;
 				preview_text.remove();
 				elem.hidden = false;
 				elem.focus();
@@ -212,11 +211,11 @@ function getChannelUrl(e) {
 				: null);
 			console.log(lbry_url);
 			if (lbry_url) {
-				let channel_list = (search_params[this.id] ? search_params[this.id] : []);
+				let channel_list = (category_search_params[this.id] ? category_search_params[this.id] : []);
 				let claim_id = lbry_url.match(/[0-9A-Fa-f]{40}$/)[0];
 				if (!channel_list.includes(claim_id)) {
 					channel_list.push(claim_id);
-					search_params[this.id] = channel_list;
+					category_search_params[this.id] = channel_list;
 
 					let preview_text = document.createElement("label");
 					preview_text.classList.add("preview_option");
@@ -224,13 +223,13 @@ function getChannelUrl(e) {
 					preview_text.onclick = () => {
 						preview_text.remove();
 						console.log("id: " + this.id);
-						search_params[this.id].splice(search_params[this.id].indexOf(claim_id), 1);
+						category_search_params[this.id].splice(category_search_params[this.id].indexOf(claim_id), 1);
 					};
 					this.value = "";
 					inputs_div.insertBefore(preview_text, this.nextSibling); 
 
 				}
-				console.log(search_params[this.id]);
+				console.log(category_search_params[this.id]);
 			}
 		});
 	}
@@ -239,9 +238,9 @@ function getChannelUrl(e) {
 function getOrderBy() {
 	let text = this.value;
 	if (text != "empty") {
-		let order_bys = (search_params.order_by ? search_params.order_by : []);
+		let order_bys = (category_search_params.order_by ? category_search_params.order_by : []);
 		order_bys.push(text)
-		search_params.order_by = order_bys;
+		category_search_params.order_by = order_bys;
 
 		let entry_div = document.createElement("div");
 		let preview_text = document.createElement("label");
@@ -261,9 +260,9 @@ function getOrderBy() {
 		entry_div.classList.add("preview_option");
 		order_button.id = "order_button";
 		order_button.onclick = () => {
-			console.log(search_params);
-			for (let i = 0; i < search_params.order_by.length; i++) {
-				let order_by = search_params.order_by[i];
+			console.log(category_search_params);
+			for (let i = 0; i < category_search_params.order_by.length; i++) {
+				let order_by = category_search_params.order_by[i];
 				let desc_order = text;
 				let asc_order = "^" + text;
 				let order = "";
@@ -276,7 +275,7 @@ function getOrderBy() {
 				} else {
 					continue;
 				}
-					search_params.order_by[i] = order;
+					category_search_params.order_by[i] = order;
 					preview_text.value = order;
 					preview_text.innerText = order + " X";
 					return;
@@ -285,7 +284,7 @@ function getOrderBy() {
 
 		let options = document.querySelectorAll("#order_by > option");
 		preview_text.onclick = () => {
-			search_params.order_by.splice(search_params.order_by.indexOf(preview_text.value), 1);
+			category_search_params.order_by.splice(category_search_params.order_by.indexOf(preview_text.value), 1);
 			preview_text.remove();
 			order_button.remove();
 			entry_div.remove();
@@ -308,13 +307,13 @@ function getOrderBy() {
 
 
 function getClaimType() {
-	let claim_types = (search_params.claim_type ? search_params.claim_type : []);
+	let claim_types = (category_search_params.claim_type ? category_search_params.claim_type : []);
 	if (this.checked && !claim_types.includes(this.name)){
 		claim_types.push(this.name);
 	} else if (!this.checked) {
 		claim_types.splice(claim_types.indexOf(this.name), 1);
 	}
-	search_params.claim_type = claim_types;
+	category_search_params.claim_type = claim_types;
 }
 
 
@@ -323,16 +322,16 @@ function getTextArray(e, elem) {
 		let text = elem.value;
 		let search_param = elem.id;
 		if (text) {
-			let array_items = search_params[search_param] ? search_params[search_param] : [];
+			let array_items = category_search_params[search_param] ? category_search_params[search_param] : [];
 			if (!array_items.includes(text)) {
 				array_items.push(text);
-				search_params[search_param] = array_items;
+				category_search_params[search_param] = array_items;
 				let preview_text = document.createElement("label");
 				preview_text.classList.add("preview_option");
 				preview_text.innerText = text + " X";
 				preview_text.onclick = () => {
 					preview_text.remove();
-					search_params[search_param].splice(search_params[search_param].indexOf(text), 1);
+					category_search_params[search_param].splice(category_search_params[search_param].indexOf(text), 1);
 					elem.focus();
 				};
 				inputs_div.insertBefore(preview_text, elem.nextSibling); 
@@ -343,19 +342,19 @@ function getTextArray(e, elem) {
 }
 
 function getCheckBox() {
-	search_params[this.id] = this.checked;	
+	category_search_params[this.id] = this.checked;
 }
 
 function doSearch() {
-		document.querySelector("#claim_list").innerText = "";
-		sendSearchParams(search_params);
+	document.querySelector("#claim_list").innerText = "";
+	sendSearchParams(category_search_params);
 }
 
 function saveCategory() {
 	let localStorage = window.localStorage;
 	let category_name_input = document.querySelector("#category_name");
 	let category_name = category_name_input.value;
-	delete search_params.page; // Page is only used for testing, doesn't need to be saved
+	delete category_search_params.page; // Page is only used for testing, doesn't need to be saved
 	if (category_name) {
 		let category_names = JSON.parse(localStorage.getItem("category_names"));
 		if (!category_names)
@@ -363,7 +362,7 @@ function saveCategory() {
 		category_names.push(category_name);
 		category_names.sort();
 		localStorage.setItem("category_names", JSON.stringify(category_names));
-		localStorage.setItem("category_" + category_name, JSON.stringify(search_params));
+		localStorage.setItem("category_" + category_name, JSON.stringify(category_search_params));
 		category_name_input.value = "";
 	}
 

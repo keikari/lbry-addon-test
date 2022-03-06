@@ -12,7 +12,9 @@ function createMostSupported(claim) {
 	let filtered_txids = JSON.parse(window.localStorage.getItem("filtered_outpoints"));
 	if (claim.value_type === "repost")
 		claim = claim.reposted_claim;
-	if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
+	if (itemInArray(claim.txid, filtered_txids) ||
+		 (claim.signing_channel ? itemInArray(claim.signing_channel.txid, filtered_txids) : false) ||
+			claim.value.tags ? claim.value.tags.some((tag) => default_not_tags.indexOf(tag) >= 0) : false) {
 		return;
 	}
 
@@ -75,7 +77,7 @@ function search_main() {
 		claim_type: "stream",
 		has_source: true,
 		order_by: "trending_score",
-		no_totals: true
+		use_default_not_tags: true,
 	}
 
 

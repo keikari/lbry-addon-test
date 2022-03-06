@@ -254,26 +254,31 @@ function createStreamClaimPreview(claim, channel_claim, isReposted, repost_claim
 	return div;
 
 }
-function sendSearchParams(search_params, channel_claim) {
+function sendSearchParams(_search_params, channel_claim) {
+	let search_params = Object.assign({}, _search_params); //To get shallow copy
+	window.onscroll = null; // Restore scroll functionality between new searches
 	search_params.page = 1;
-	search_params.has_source = true;
-	if (!search_params.not_tags)
-		search_params.not_tags = [];
-	search_params.not_tags = search_params.not_tags.concat(["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"]);
+	search_params.no_totals = true;
+	if (search_params.use_default_not_tags) {
+		search_params.not_tags = Array.isArray(search_params.not_tags) ? search_params.not_tags : [];
+		search_params.not_tags = search_params.not_tags.concat(default_not_tags);
+	}
 	doACall("claim_search", search_params, (response) => {
 		addClaimsToList(response, channel_claim, search_params);
-	});
-	window.onscroll = () => {
-		if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-			search_params.page++;
-			doACall("claim_search", search_params, (response) => {
-				// Stop looking for more claims when there aren't any
-				if (response.result.items.length == 0)
-					window.onscroll = null;
-				addClaimsToList(response, channel_claim, search_params);
-			});
+		// Set onScroll after the very first page has returned
+		window.onscroll = () => {
+			if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+				search_params.page++;
+				doACall("claim_search", search_params, (response) => {
+					// Stop looking for more claims when there aren't any
+					if (response.result.items.length == 0) {
+						window.onscroll = null;
+					}
+					addClaimsToList(response, channel_claim, search_params);
+				});
+			}
 		}
-	}
+	});
 }
 // Channel claim is optional
 function addClaimsToList(obj, channel_claim, search_params) {

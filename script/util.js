@@ -1,3 +1,5 @@
+var default_not_tags = ["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"];
+
 function cleanHTML(text) {
 	return DOMPurify.sanitize(text, { USE_PROFILES: { html: true } });
 }
