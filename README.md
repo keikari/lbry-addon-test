@@ -18,7 +18,7 @@ DOMPurify https://github.com/cure53/DOMPurify
  
 ### This is code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
-Very beta, possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the time(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)   
+Very beta, ~~possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the time(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)~~   
 May be fun to check out if you have wanted LBRY in your browser.  
 
 How to use:  
@@ -58,13 +58,20 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 - add-on page needs to be reloaded once after first launch
 - notifications get permanent when navigating to new page
 - floating player exists, but isn't that good
-- can't be installed(categories won't save and need to be reload on restart)
+- can't be installed persistently(categories won't save and need to be reload on restart)
+ 
+#### Screenshots(So you don't need to install to check it out. Search bar and balance excluded from screenshots)  
+  
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/156902637-918f4bf8-97be-4588-bf68-a13cadd4b822.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902638-5b21f1b7-4382-4365-a766-bbd248a72801.png">  
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/156902640-854e41f1-9394-4676-9ac8-304949320bd9.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902642-bcce20a8-787a-4291-b530-90e7d71e9a09.png">  
+</hr>  
+  
 
-#### Screenshots(So you don't need to install to check it out. Search bar and balance excluded from screenshots)
-Current?  
+=====================OLDER================================   
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/156160525-1a388886-8ec7-4120-958f-46563675cf36.png">  
-Slightly out dated:  
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859542-061f7b08-ac08-4aef-ba07-2e70af60e0d8.png"> <img width="500px" src="https://user-images.githubusercontent.com/34790748/155859544-ca4138da-f610-476c-a819-ff6368a1058e.png"> 
+Old  
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859542-061f7b08-ac08-4aef-ba07-2e70af60e0d8.png">
+<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859544-ca4138da-f610-476c-a819-ff6368a1058e.png">  
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/155859545-07a1f6e6-ebab-4a8b-82a5-9eb69ac1b1db.png">
 
 
