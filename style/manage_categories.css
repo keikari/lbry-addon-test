@@ -1,0 +1,116 @@
+#inputs_div {
+	background: #1A1A1A;
+	box-shadow: 0 0 3px black;
+}
+#options_div {
+	padding: 5px 0px;
+	display: block;
+}
+#claim_types_label {
+	margin-left: 5px;
+}
+h3 {
+	color: #eee;
+}
+.claim_type_check_box {
+	margin: 0px;
+	padding: 0px;
+}
+#options_div *{
+	display: inline;
+}
+#order_by_div {
+}
+#order_by {
+	width: 140px;
+}
+#claim_type_div {
+	padding: 5px 0px;
+	display: block;
+}
+#claim_type_div > label {
+	display: inline-block;
+	margin-right: 20px;
+}
+#save_category_div {
+	margin-right: 40px;
+	position: relative;
+	float: right;
+	top: 200px;
+}
+#advanced_options_div {
+	background: #1A1A1A;
+	margin-top: 10px;
+	padding: 5px 20px;
+	box-shadow: 0 0 3px black;
+	
+}
+#general_inputs_div { 
+	height: fit-content;
+	padding: 20px;
+	background: #1F1F1F;
+	box-shadow: 0 0 3px black;
+}
+#general_inputs_div > #left_div {
+	background: #222;
+	display: inline-block;
+	position: relative;
+	padding: 0px 0px 20px 20px;
+	width: 70%;
+	height: fit-content;
+	box-shadow: 0 0 3px black;
+}
+#general_inputs_div > #right_div {
+	background: #444;
+	width: 25%;
+	float: left;
+	display: inline-block;
+	padding: 0px 10px 10px 10px;
+}
+#show_advanced_params_span {
+	font-size: 16px;
+	text-decoration: underline;
+}
+#basic_params {
+	float: left;
+}
+#general_params {
+	float: right;
+}
+.input_div {
+	margin: 10px 5px;
+}
+.input_div > label{
+	padding: 3px 0px;
+}
+.input_div > input{
+	background: #555;
+	border: none;
+	color: white;
+}
+label {
+	color: #eee;
+	display: block;
+}
+.preview_option {
+	background: #111;
+	color: #fff;
+	display:block;
+	padding: 3px;
+	width:fit-content;
+	box-shadow: 0 0 3px black;
+}
+#import_export_div {
+	position:relative;
+	max-width: 1200px;
+	height: 600px;
+	background:#444;
+}
+textarea {
+	margin:auto;
+	width: 1000px;
+	height: 550px;
+	background: #333;
+	color: #fff;
+}
+
