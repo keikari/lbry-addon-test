@@ -12,6 +12,10 @@ function deleteCategory() {
 		category_list.splice(category_list.indexOf(category.name), 1);
 		localStorage.setItem("category_names", JSON.stringify(category_list));
 		localStorage.removeItem(`category_${category_list}`);
+
+		if (category.category_name != "") {
+			addNotification(`Deleted category ${category.category_name}`, 3000);
+		}
 	}
 }
 function loadCategory() {
@@ -377,7 +381,7 @@ function doSearch(category_params = null) {
 	sendSearchParams(category_params, {}, true);
 }
 
-function saveCategory(e, is_temp_category = false) {
+function saveCategory(is_temp_category = false) {
 	let localStorage = window.localStorage;
 	let category_name = "";
 	let category_name_input = document.querySelector("#category_name");
@@ -493,7 +497,7 @@ function main() {
 
 	// Set save button
 	let save_button = document.querySelector("#save_button");
-	save_button.onclick = saveCategory;
+	save_button.onclick = () => saveCategory(is_temp = false);
 
 
 	// Set show advanced params toggle

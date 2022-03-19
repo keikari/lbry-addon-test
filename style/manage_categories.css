@@ -32,6 +32,11 @@ h3 {
 	display: inline-block;
 	margin-right: 20px;
 }
+#hide_button {
+	margin: 10px;
+	position: relative;
+	float: right;
+}
 #save_category_div {
 	margin-right: 40px;
 	position: relative;
