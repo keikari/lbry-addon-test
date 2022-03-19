@@ -254,10 +254,12 @@ function createStreamClaimPreview(claim, channel_claim, isReposted, repost_claim
 	return div;
 
 }
-function sendSearchParams(_search_params, channel_claim) {
+function sendSearchParams(_search_params, channel_claim, is_temp_category = false) {
 	let search_params = Object.assign({}, _search_params); //To get shallow copy
 	window.onscroll = null; // Restore scroll functionality between new searches
-	search_params.page = 1;
+	if (!search_params.page) {
+		search_params.page = 1;
+	}
 	search_params.no_totals = true;
 	if (search_params.use_default_not_tags) {
 		search_params.not_tags = Array.isArray(search_params.not_tags) ? search_params.not_tags : [];
@@ -275,6 +277,10 @@ function sendSearchParams(_search_params, channel_claim) {
 						window.onscroll = null;
 					}
 					addClaimsToList(response, channel_claim, search_params);
+					if (is_temp_category && search_params.page > 2) {
+						_search_params.page = search_params.page - 1;
+						localStorage.setItem("category__temp_", JSON.stringify(_search_params));
+					}
 				});
 			}
 		}
@@ -287,6 +293,9 @@ function addClaimsToList(obj, channel_claim, search_params) {
 	const ul = document.querySelector("#claim_list");
 
 	obj.result["items"].forEach((claim) => {
+		// Sanitize data in "claim", just to be safe.
+		claim = JSON.parse(cleanHTML(JSON.stringify(claim)));
+
 		// If using channel filters and signature is invalid, don't show publishes
 		if (claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
 			return;
@@ -302,7 +311,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 
 		// Check that claim isn't in filter or block list
 		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
-			return;
+			//return;
 		}
 		
 		// Just create this in somewhere

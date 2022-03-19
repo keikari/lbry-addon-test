@@ -4,7 +4,6 @@ function category_main() {
 	let localStorage = window.localStorage;
 	let search_params = localStorage.getItem("category_" + category_name);
 	search_params = JSON.parse(search_params);
-	window.parent.document.title = category_name;
 
 	if (category_name === "Following") {
 		doACall("preference_get", {key: "local"}, (response) => {
@@ -17,6 +16,7 @@ function category_main() {
 
 			search_params = {
 				channel_ids: channel_ids,
+				remove_duplicates: true,
 				order_by: "release_time"
 			}
 			sendSearchParams(search_params);

@@ -56,7 +56,7 @@ function createDeleteButton(claim) {
 
 
 function createFollowButton(response, obj) {
-	let claim = obj.obj;
+	let claim = obj.claim;
 	let options_div = obj.div;
 	let button = document.createElement("button");
 	let subscriptions = response.result.local.value.subscriptions;
@@ -294,6 +294,17 @@ function createVideo(claim) {
 	video.onloadeddata = () => trackPlayerTime(claim.metadata.source.sd_hash, video);
 
 	content_div.append(video);
+
+	// Handle timestamps from description 
+	let description_div = document.querySelector("#description_div");
+  let timestamps = description_div.querySelectorAll(".timestamp");
+  timestamps.forEach((timestamp) => { 
+	  let times = timestamp.innerText.match(/([0-9]{1,2}):([0-9]{2}):([0-9]{2})|([0-9]{1,2}):([0-9]{2})[^:]?/);
+	  let time = parseInt(((times[1] | 0) * 3600)) + parseInt((( (times[2]| 0) + (times[4] | 0) ) * 60)) + parseInt((times[3]|0) + (times[5]|0));
+	  timestamp.innerHTML = cleanHTML("<u>" + timestamp.innerText + "</u>");
+	  timestamp.onclick = () => {video.currentTime = time; video.play();};
+  });
+
 }
 
 function createDocument(claim) {
@@ -329,7 +340,15 @@ function createImage(claim) {
 	content_div.append(img);
 }
 
-function setInfo(obj, metadata) {
+function setInfo(claim) {
+	// Sanitize data in "claim", just to be safe. Also would be needed for claim.description anyway.
+	claim = JSON.parse(cleanHTML(JSON.stringify(claim)));
+
+	if (!claim.metadata) {
+		claim.metadata = claim.value;
+		delete claim.value;
+	}
+
 	let details_div = document.querySelector("#details_div");
 	details_div.innerText = "";
 	let right_div = document.createElement("div");
@@ -340,7 +359,7 @@ function setInfo(obj, metadata) {
 	info_div.id = "info_div";
 
 	// Title
-	let title = (metadata.title);
+	let title = (claim.metadata.title);
 	let title_text = document.createElement("h3");
 	title_text.id = "title_text";
 	title_text.innerText = title;
@@ -350,9 +369,9 @@ function setInfo(obj, metadata) {
 	// Channel
 	let channel = "Anonymous";
 	let channel_url = "";
-	if (obj.is_channel_signature_valid) {
-		channel = obj.signing_channel.name;
-		channel_url = obj.signing_channel.permanent_url;
+	if (claim.is_channel_signature_valid) {
+		channel = claim.signing_channel.name;
+		channel_url = claim.signing_channel.permanent_url;
 	}
 	let channel_link = document.createElement("a");
 	channel_link.id = "channel_link";
@@ -366,16 +385,16 @@ function setInfo(obj, metadata) {
 	// URL
 	let url_text = document.createElement("p");
 	url_text.id = "url_text";
-	let url = obj.canonical_url.replaceAll('#', ':');
-	if (!obj.is_channel_signature_valid)
-		url = obj.short_url;
+	let url = claim.canonical_url.replaceAll('#', ':');
+	if (!claim.is_channel_signature_valid)
+		url = claim.short_url;
 	url_text.innerText = url;
 	info_div.append(url_text);
 
 	// Claim_id
 	let claim_id_text = document.createElement("p");
 	claim_id_text.id = "claim_id_text";
-	let claim_id = obj.claim_id;
+	let claim_id = claim.claim_id;
 	claim_id_text.innerText = claim_id;
 	info_div.append(claim_id_text);
 
@@ -384,18 +403,18 @@ function setInfo(obj, metadata) {
 	let options_div = document.createElement("div");
 	options_div.id = "options_div";
 	
-	if (obj.signing_channel)
-		doACall("preference_get", {key: "local"}, createFollowButton, {"obj": obj, "div": options_div});
-	options_div.append(createRepostButton(obj));
-	options_div.append(createSupportButton(obj));
-	options_div.append(createDeleteButton(obj));
+	if (claim.signing_channel)
+		doACall("preference_get", {key: "local"}, createFollowButton, {"claim": claim, "div": options_div});
+	options_div.append(createRepostButton(claim));
+	options_div.append(createSupportButton(claim));
+	options_div.append(createDeleteButton(claim));
 
 	right_div.append(options_div);
 
 	// LBC 
 	let LBC_text = document.createElement("p");
 	LBC_text.id = "LBC_text";
-	let LBC_amount = parseFloat(obj.meta.support_amount) + parseFloat(obj.amount);
+	let LBC_amount = parseFloat(claim.meta.support_amount) + parseFloat(claim.amount);
 	LBC_text.innerText = LBC_amount.toFixed(2).toString() + " LBC";
 
 	right_div.append(LBC_text);
@@ -413,36 +432,38 @@ function setInfo(obj, metadata) {
 			json_div.appendChild(json_viewer.getContainer());
 			let description_div = document.querySelector("#description_div");
 			description_div.parentElement.insertBefore(json_div, description_div);
-			json_viewer.showJSON(obj, -1, 1);
+			json_viewer.showJSON(claim, -1, 1);
 		} else {
 			json_viewer.remove();
 		}
 	});
 
 	// Add description
-	let description = metadata.description;
+	let description = claim.metadata.description;
 	if (description) {
 		description_div = document.querySelector("#description_div");
-		description_div.innerHTML = cleanHTML(markdown(description));
-		let timestamps = description_div.querySelectorAll(".timestamp");
-		timestamps.forEach((timestamp) => {
-			let video = document.querySelector("video");
-			let times = timestamp.innerText.match(/([0-9]{1,2}):([0-9]{2}):([0-9]{2})|([0-9]{1,2}):([0-9]{2})[^:]?/);
-			let time = parseInt(((times[1] | 0) * 3600)) + parseInt((( (times[2]| 0) + (times[4] | 0) ) * 60)) + parseInt((times[3]|0) + (times[5]|0));
-			timestamp.innerHTML = cleanHTML("<u>" + timestamp.innerText + "</u>");
-			timestamp.onclick = () => {video.currentTime = time; video.play();};
+	 	description_div.innerHTML = markdown(description);
+		// Cut really long links
+		let links = description_div.querySelectorAll("a");
+		links.forEach((link) => {
+			if (link.text.length > 50) {
+				link.text = link.text.substr(0, 50) + "...";
+			}
 		});
 	}
 
 }
 
-function loadFromClaim(claim) {
+function loadFromClaim(claim, interval_id = null) {
 	if (!document.querySelector("#content_div")){
-		setTimeout(() => {loadFromClaim(claim)}, 100);
+		if (interval_id === null) {
+			setInterval(() => {loadFromClaim(claim, interval_id)}, 100);
+		}
 		return
 	}
+	clearInterval(interval_id);
 	createContentView();
-	setInfo(claim, claim.value);
+	setInfo(claim);
 }
 
 function handleCollection(claim) {
@@ -494,9 +515,9 @@ function loadFromResolve() {
 			createContentView();
 		} else if (claim.value.fee) {
 			// Hande paid content
-			handlePaidContent(obj);
+			handlePaidContent(claim);
 		}
-		setInfo(claim, claim.value);
+		setInfo(claim);
 	});
 }
 
@@ -505,7 +526,7 @@ function main_video() {
 	let claim = JSON.parse(localStorage.getItem(claim_id));
 	if (claim && claim.value_type === "collection") {
 		handleCollection(claim);
-		setInfo(claim, claim.value);
+		setInfo(claim);
 	}	else if (claim && !claim.value.fee) {
 		console.log("loaded from claim");
 		localStorage.removeItem(claim_id);

@@ -1,19 +1,11 @@
-<!DOCTYPE html utf-8>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8"/>
 		<link rel="stylesheet" href="style/json-viewer.css">
 		<link rel="stylesheet" href="style/claim_list.css">
-		<style>
-			*{font-family: arial}
-			body{ background: #222; color: #aaa; padding-top:50px} 
-			#ignore-div{ border-color: red; border-style: solid}
-			#main_div{max-width:1200px; width:90%; margin:auto;}
-			#inputs_div{text-align:left; margin: 0 20px }
-			.preview_option{background: #111; color: #fff; display:block;margin: 2px; width:fit-content}
-			#import_export_div{position:relative; max-width: 1200px; height: 600px; background:#444}
-			textarea{margin:auto; width: 1000px; height: 550px; background: #333; color: #fff}
-		</style>
+		<link rel="stylesheet" href="style/common.css">
+		<link rel="stylesheet" href="style/manage_categories.css">
 		<script src="script/purify.min.js"></script>
 		<script src="script/util.js"></script>
 		<script src="script/json-viewer.js"></script>
@@ -28,131 +20,205 @@
 					</select>
 					<button id="import_category_button">Load</button>
 					<button id="hide_button">X</button>
+					<button id="delete_button">Delete</button>
 				</div>
 				<div id="pop_up_text_div">
-					<textarea></textarea>
+					<textarea>{"category_name":"","category":{}}</textarea>
 				</div>
-				
 			</div>	
-			<div id="options-div">
-				<button id="import_export_category_button">Load from text</button>
-			</div>
+			<button id="import_export_category_button">Load/Delete categories</button>
 			<div id="inputs_div">
-				<label for="text">Search text</label><br>
-				<input class="get_text" type="text" id="text"><br><br>
-				<label for="name">Name</label><br>
-				<input class="get_text" type="text" id="name"><br><br>
-				<label for="claim_ids">Claim_ids</label><br>
-				<input class="get_text_array" type="text" id="claim_ids"><br><br>
+				<div id="options_div">
+						<div class="input_div">
+							<label for="use_default_not_tags">Filter mature content:</label>
+							<input class="get_check_box" type="checkbox" id="use_default_not_tags" checked="true">
+						</div>
+						<div class="input_div">
+							<label for="remove_duplicates">Remove duplicates:</label>
+							<input class="get_check_box" type="checkbox" id="remove_duplicates">
+						</div>
+						<div class="input_div">
+							<label for="is_controlling">Only controlling claims:</label>
+							<input class="get_check_box" type="checkbox" id="is_controlling">
+						</div>
 
-				<label for="channel_ids">Channels (name, LBRY_url, claim_id)</label><br>
-				<input type="text" id="channel_ids"><br><br>
-				<label for="not_channel_ids">Not Channels (name, LBRY_url, claim_id)</label><br>
-				<input type="text" id="not_channel_ids"><br><br>
-				
-				<label for="limit_claims_per_channel">Maximum claims to return per channel</label><br>
-				<input type="text" class="get_int" id="limit_claims_per_channel"><br><br>
+				</div>
+					<div id="claim_type_div">
+						<label id="claim_types_label" for="claim_type">Claim types:</label>
+						<input type="checkbox" class="claim_type_check_box" name="stream">
+						<label for="claim_type_stream">Stream</label>
+						<input type="checkbox" class="claim_type_check_box" name="repost">
+						<label for="claim_type_repost">Repost</label>
+						<input type="checkbox" class="claim_type_check_box" name="channel">
+						<label for="claim_type_channel">Channel</label>
+						<input type="checkbox" class="claim_type_check_box" name="collection">
+						<label for="claim_type_collection">Collection</label>
+					</div>
+				</div>
+				<div id="general_inputs_div">
+				<div id="left_div">
+					<div id="basic_params">
+						<h3>Basic Parameters</h3>
+						<div class="input_div">
+							<label for="text">Search text</label>
+							<input class="get_text" type="text" id="text">
+						</div>
+						<div class="input_div">
+							<label for="channel_ids">Channels (name, LBRY_url, claim_id)</label>
+							<input type="text" id="channel_ids">
+						</div>
+						<div class="input_div">
+							<label for="limit_claims_per_channel">Max claims per channel(per page)</label>
+							<input type="text" class="get_int" id="limit_claims_per_channel">
+						</div>
+						<div class="input_div">
+							<label for="any_tags">Any of these tags</label>
+							<input class="get_text_array" type="text" id="any_tags">
+						</div>
+						<div class="input_div">
+							<label for="any_languages">Any of these languages (en, fr, etc.)</label>
+							<input class="get_text_array" type="text" id="any_languages">
+						</div>
+						<div class="input_div">
+							<label for="fee_amount">Fee amount(supports equality constraints)</label>
+							<input class="get_text" type="text" id="fee_amount">
+						</div>
+						<div class="input_div">
+							<label for="not_tags">None of these tags</label>
+							<input class="get_text_array" type="text" id="not_tags">
+						</div>
+							<label for="order_by">Order by</label>
+							<select id="order_by">
+								<option value="empty"></option>
+								<option value="trending_score">trending_score</option>
+								<option value="release_time">release_time</option>
+								<option value="effective_amount">effective_amount</option>
+								<option value="creation_height">creation_height</option>
+								<option value="height">height</option>
+								<option value="support_amount">support_amount</option>
+								<option value="reposted">reposted</option>
+								<option value="duration">duration</option>
+								<option value="claim_id">claim_id</option>
+								<option value="name">name</option>
+								<option value="txid">txid</option>
+								<option value="public_key_id">public_key_id</option>
+								<option value="timestamp">timestamp</option>
+								<option value="creation_timestamp">creation_timestamp</option>
+								<option value="activation_height">activation_height</option>
+								<option value="expiration_heigth">expiration_heigth</option>
+								<option value="amount">amount</option>
+								<option value="claim_type">claim_type</option>
+								<option value="stream_types">stream_types</option>
+								<option value="media_types">media_types</option>
+								<option value="fee_currency">fee_currency</option>
+								<option value="fee_amount">fee_amount</option>
+								<option value="trending_mixed">trending_mixed(OLD)</option>
+								<option value="trending_group">trending_group(OLD)</option>
+							</select>
+						</div>
+						<div id="general_params">
+							<h3>Other General Parameters</h3>
+							<div class="input_div">
+								<label for="name">Name</label>
+								<input class="get_text" type="text" id="name">
+							</div>
+							<div class="input_div">
+								<label for="claim_ids">Claim_ids</label>
+								<input class="get_text_array" type="text" id="claim_ids">
+							</div>
+							<div class="input_div">
+								<label for="not_channel_ids">Not Channels (name, LBRY_url, claim_id)</label>
+								<input type="text" id="not_channel_ids">
+							</div>
+							<div class="input_div">
+								<label for="all_tags">All of these tags</label>
+								<input class="get_text_array" type="text" id="all_tags">
+							</div>
+							<div class="input_div">
+								<label for="all_languages">All of these languages (en, fr, etc.)</label>
+								<input class="get_text_array" type="text" id="all_languages">
+							</div>
+							<div class="input_div">
+								<label for="stream_types">Stream types (video, image, audio, document,etc)</label>
+								<input class="get_text_array" type="text" id="stream_types">
+							</div>
+							<div class="input_div">
+								<label for="media_types">Media types (video/mp4, image/png, audio/mp3)</label>
+								<input class="get_text_array" type="text" id="media_types">
+							</div>
+							<div class="input_div">
+								<label for="page">First result page</label>
+								<input class="get_int" type="text" id="page">
+							</div>
+						</div>
+					</div>
+					<div id="save_category_div">
+						<label for="category_name">Category name:</label>
+						<input type="text" id="category_name">
+						<button id="save_button">Save</button>
+						<br>
+						<button id="test_button">Test</button>
+						<button id="clear_params_btn">Clear</button>
+					</div>
+					<div id="advanced_options_div">
+						<h3>Advanced Parameters <span id="show_advanced_params_span">show</span></h3>
+						<div id="advanced_input_div" hidden="true">
+							<div class="input_div">
+								<label for="amount">Originally staked amount (supports equality constraints)</label>
+								<input class="get_text is_amount" type="text" id="amount">
+							</div>
+							<div class="input_div">
+								<label for="support_amount">Support amount(supports equality constraints)</label>
+								<input class="get_text is_amount" type="text" id="support_amount">
+							</div>
+							<div class="input_div">
+								<label for="effective_amount">Effective amount(supports equality constraints)</label>
+								<input class="get_text is_amount" type="text" id="effective_amount">
+							</div>
 
-				<label for="any_tags">Any of these tags</label><br>
-				<input class="get_text_array" type="text" id="any_tags"><br><br>
-				<label for="all_tags">All of these tags</label><br>
-				<input class="get_text_array" type="text" id="all_tags"><br><br>
-				<label for="not_tags">None of these tags</label><br>
-				<input class="get_text_array" type="text" id="not_tags"><br><br>
-				<label for="use_default_not_tags">Filter content with mature tags</label><br>
-				<input class="get_check_box" type="checkbox" id="use_default_not_tags" checked="true"><br><br>
-
-
-				<label for="order_by">Order by: (Can have multiple orderings)</label><br>
-				<select id="order_by">
-					<option value="empty"></option>
-					<option value="claim_id">claim_id</option>
-					<option value="creation_height">creation_height</option>
-					<option value="release_time">release_time</option>
-					<option value="name">name</option>
-					<option value="txid">txid</option>
-					<option value="channel">channel</option>
-					<option value="public_key_id">public_key_id</option>
-					<option value="height">heigth</option>
-					<option value="timestamp">timestamp</option>
-					<option value="creation_timestamp">creation_timestamp</option>
-					<option value="activation_height">activation_height</option>
-					<option value="expiration_heigth">expiration_heigth</option>
-					<option value="amount">amount</option>
-					<option value="support_amount">support_amount</option>
-					<option value="effective_amount">effective_amount</option>
-					<option value="reposted">reposted</option>
-					<option value="claim_type">claim_type</option>
-					<option value="stream_types">stream_types</option>
-					<option value="media_types">media_types</option>
-					<option value="fee_currency">fee_currency</option>
-					<option value="fee_amount">fee_amount</option>
-					<option value="duration">duration</option>
-					<option value="trending_score">trending_score</option>
-
-				</select><br><br>
-
-				<label for="stream_types">Stream types (video, image, audio, document,etc)</label><br>
-				<input class="get_text_array" type="text" id="stream_types"><br><br>
-				<label for="media_types">Media types (video/mp4, image/png, audio/mp3)</label><br>
-				<input class="get_text_array" type="text" id="media_types"><br><br>
-
-					<label for="claim_type">Claim type:</label><br>
-					<label for="claim_type_stream">Stream:</label>
-					<input type="checkbox" id="claim_type_check_box" name="stream"><br>
-					<label for="claim_type_repost">Repost</label>
-					<input type="checkbox" id="claim_type_check_box" name="repost"><br>
-					<label for="claim_type_channel">Channel:</label>
-					<input type="checkbox" id="claim_type_check_box" name="channel"><br>
-					<label for="claim_type_collection">Collection:</label>
-					<input type="checkbox" id="claim_type_check_box" name="collection"><br><br>
-				
-
-				<label for="any_languages">Any of these languages (en)</label><br>
-				<input class="get_text_array" type="text" id="any_languages"><br><br>
-				<label for="all_languages">All of these languages (en)</label><br>
-				<input class="get_text_array" type="text" id="all_languages"><br><br>
-
-
-				<label for="remove_duplicates">Remove duplicates</label><br>
-				<input class="get_check_box" type="checkbox" id="remove_duplicates"><br><br>
-				<label for="is_controlling">Only controlling claims</label><br>
-				<input class="get_check_box" type="checkbox" id="is_controlling"><br><br>
-
-				<label for="amount">Originally staked amount (supports equality constraints)</label><br>
-				<input class="get_text is_amount" type="text" id="amount"><br><br>
-				<label for="support_amount">Support amount(supports equality constraints)</label><br>
-				<input class="get_text is_amount" type="text" id="support_amount"><br><br>
-				<label for="effective_amount">Effective amount(supports equality constraints)</label><br>
-				<input class="get_text is_amount" type="text" id="effective_amount"><br><br>
-				<label for="fee_amount">Fee amount(supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="fee_amount"><br><br>
-
-				<label for="reposted">Times reposted(supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="reposted"><br><br>
-
-				<label for="fee_currency">Currency which fee is based (LBC, BTC, USD)</label><br>
-				<input class="get_text" type="text" id="fee_currency"><br><br>
-
-
-				<label for="heigth">Last updated in block: (supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="height"><br><br>
-				<label for="timestamp">Last updated time in seconds, UNIX time, seconds (supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="timestamp"><br><br>
-				<label for="creation_height">Created in block:(supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="creation_height"><br><br>
-				<label for="creation_timestamp">Creation time in seconds, UNIX time (supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="creation_timestamp"><br><br>
-				<label for="activation_height">Activates in block:(supports equality constraints)</label><br>
-				<input class="get_text" type="text" id="activation_height"><br><br>
-
-				<button id="test_button">Test</button>
-				<label for="category_name">Category name:</label>
-				<input type="text" id="category_name">
-				<button id="save_button">Save</button>
+							<div class="input_div">
+								<label for="reposted">Times reposted(supports equality constraints)</label>
+								<input class="get_text" type="text" id="reposted">
+							</div>
+							<div class="input_div">
+								<label for="trending_score">Trending score (supports equality constraints)</label>
+								<input class="get_text" type="text" id="trending_score">
+							</div>
+							<div class="input_div">
+								<label for="fee_currency">Currency which fee is based (LBC, BTC, USD)</label>
+								<input class="get_text" type="text" id="fee_currency">
+							</div>
+							<div class="input_div">
+								<label for="heigth">Last updated in block: (supports equality constraints)</label>
+								<input class="get_text" type="text" id="height">
+							</div>
+							<div class="input_div">
+								<label for="release_time">Release time: (supports equality constraints)</label>
+								<input class="get_text" type="text" id="release_time">
+							</div>
+							<div class="input_div">
+								<label for="timestamp">Last updated time in seconds, UNIX time, seconds (supports equality constraints)</label>
+								<input class="get_text" type="text" id="timestamp">
+							</div>
+							<div class="input_div">
+								<label for="creation_height">Created in block:(supports equality constraints)</label>
+								<input class="get_text" type="text" id="creation_height">
+							</div>
+							<div class="input_div">
+								<label for="creation_timestamp">Creation time in seconds, UNIX time (supports equality constraints)</label>
+								<input class="get_text" type="text" id="creation_timestamp">
+							</div>
+							<div class="input_div">
+								<label for="activation_height">Activates in block:(supports equality constraints)</label>
+								<input class="get_text" type="text" id="activation_height">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="claim_list_div">
+					<ul id="claim_list">
+					</ul>
+				</div>
 			</div>
-				<ul id="claim_list">
-				</ul>
-		</div>
 	</body>
 </html>

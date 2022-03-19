@@ -8,10 +8,14 @@ function createCategoryItem(name) {
 	let category_list_item = document.createElement("p");
 	category_list_item.id = "category_list_item";
 	category_list_item.innerText = name;
-	if (name == "Manage Categories")
-		category_list_item.onclick = () => { iframe.src = "manage_categories.html"};
-	else
+	if (name == "Manage Categories") {
+		category_list_item.onclick = () => { 
+			localStorage.removeItem("category__temp_");
+			iframe.src = "manage_categories.html"
+		};
+	} else {
 		category_list_item.onclick = () => { iframe.src = "category.html?category_name="+name  };
+	}
 	return category_list_item;
 }
 
@@ -25,7 +29,7 @@ function listCategories() {
 	let items = [];
 	if (category_names) {
 		category_names.forEach((category_name) => {
-			if (category_name)
+			if (category_name !== "_temp_")
 				items.push(createCategoryItem(category_name));
 		});
 	}
@@ -142,7 +146,7 @@ function moveVideoToFloatingPlayer(sd_hash, time) {
 
 }
 
-function hmm() {
+function getBlockLists() {
 	let xhr = new XMLHttpRequest();
 	let server = "https://api.odysee.com/file/list_blocked";
 	let filtered_claims = [];
@@ -166,14 +170,12 @@ function hmm() {
 }
 
 function handleFloatingPlayer(interval_id = null) {
-	console.log(`interval_id: ${interval_id}`);
 	let video = iframe.contentWindow.document.querySelector("video");
 	let isVideoPage = iframe.contentWindow.document.documentURI.match("video.html");;
-	console.log(`isVideopage: ${Boolean(isVideoPage)}`);
 	if (!video && isVideoPage) {
 		if (interval_id == null) {
-			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 200);
-			setTimeout(() => clearInterval(interval_id), 5000); // Wait video for max 5s
+			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 500);
+			setTimeout(() => clearInterval(interval_id), 1000 * 10); // Wait video for max 10s
 		}
 	} else if (video) {
 		clearInterval(interval_id);
@@ -199,6 +201,7 @@ function handleFloatingPlayer(interval_id = null) {
 }
 
 window.onload = () => {
+	window.document.title = "LBRY";
 	iframe = document.querySelector("iframe");
 	let page = getClaimTypeFromUrl(lbryUrl);
 	console.log("window loaded");
@@ -213,6 +216,11 @@ window.onload = () => {
 	handleFloatingPlayer();
 
 	iframe.onload = function () {
+		let is_content_page = iframe.contentDocument.documentURI.match("video.html");
+		let is_channel_page = iframe.contentDocument.documentURI.match("channel.html");
+		if (!is_content_page && !is_channel_page) {
+			window.document.title = "LBRY";
+		}
 		handleFloatingPlayer();
 		updateWalletBalance();
 		listCategories();
@@ -268,5 +276,5 @@ window.onload = () => {
 	});
 	wallet_btn.onclick = () => { iframe.src = "transactions.html" };
 
-	hmm();
+	getBlockLists();
 };

@@ -1,18 +1,30 @@
-var category_search_params = {
+var default_category = {
 	use_default_not_tags: true,
 };
+var category_search_params = Object.assign({}, default_category);
 
+function deleteCategory() {
+	let localStorage = window.localStorage;
+	let text_area = document.querySelector("textarea");
+	if (text_area.value) {
+		let	category = JSON.parse(text_area.value);
+		let category_list = JSON.parse(localStorage.getItem("category_names"));
+		category_list.splice(category_list.indexOf(category.name), 1);
+		localStorage.setItem("category_names", JSON.stringify(category_list));
+		localStorage.removeItem(`category_${category_list}`);
+	}
+}
 function loadCategory() {
 	let text_area = document.querySelector("textarea");
-	let category = "";
-	let category_name = "";
-	let category_params = "";
 	if (text_area.value) {
-		category = JSON.parse(text_area.value);
-		category_name = category.category_name;
-		category_params = category.category;
+		let	category = JSON.parse(text_area.value);
+		fillFormFields(category);
 	}
-
+}
+function fillFormFields(category) {
+	console.log(category);
+	category_name = category.category_name;
+	category_params = category.category;
 	// Clear old entries
 	let option_previews = document.querySelectorAll(".preview_option");
 	option_previews.forEach( (preview) => {
@@ -35,7 +47,7 @@ function loadCategory() {
 
 		// Deal with claim type check boxes
 		if ( key == "claim_type" ) {
-			let checkBoxes = document.querySelectorAll("#claim_type_check_box");
+			let checkBoxes = document.querySelectorAll(".claim_type_check_box");
 			value.forEach((item) => {
 				checkBoxes.forEach((checkBox) => {
 					if (checkBox.name == item) {
@@ -81,7 +93,10 @@ function loadCategory() {
 			}
 		}
 	});
-	document.querySelector("#category_name").value = category_name;
+	console.log(category_name);
+	if (category_name != "_temp_") {
+		document.querySelector("#category_name").value = category_name;
+	}
 }
 
 function exportCategory() {
@@ -95,7 +110,7 @@ function exportCategory() {
 			category: category});
 		category_text.value = category;
 	} else 
-		category_text.value = "";
+		category_text.value = '{"category_name":"","category":{}}';
 }
 
 function populateCategorySelector(selector_id) {
@@ -162,17 +177,16 @@ function getText(e, elem) {
 
 			};
 			elem.hidden = true;
-			inputs_div.insertBefore(preview_text, elem); 
+			elem.parentElement.insertBefore(preview_text, elem); 
 		}
 	}
 }
 
 function getNumber(e, elem) {
 	if (e.keyCode === 13) {
-		//let elem = document.querySelector(elem_id);
 		let text = elem.value;
 		if (text) {
-			category_search_params[elem.id] = parseInt(text);
+				category_search_params[elem.id] = parseInt(text);
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
 			preview_text.innerText = text + " X";
@@ -184,7 +198,7 @@ function getNumber(e, elem) {
 
 			};
 			elem.hidden = true;
-			inputs_div.insertBefore(preview_text, elem); 
+			elem.parentElement.insertBefore(preview_text, elem); 
 		}
 	}
 }
@@ -206,30 +220,33 @@ function getChannelUrl(e) {
 		doACall(json.method, json.params, (response) => {
 			let obj = response.result;			
 			console.log(obj);
-			let lbry_url = (obj[text] ? obj[text].permanent_url
-				:	obj.items[0] ? obj.items[0].permanent_url 
+			let claim = (obj[text] ? obj[text]
+				:	obj.items[0] ? obj.items[0]
 				: null);
-			console.log(lbry_url);
-			if (lbry_url) {
+			console.log(claim);
+			if (!claim.error) {
 				let channel_list = (category_search_params[this.id] ? category_search_params[this.id] : []);
-				let claim_id = lbry_url.match(/[0-9A-Fa-f]{40}$/)[0];
+				let claim_id = claim.permanent_url.match(/[0-9A-Fa-f]{40}$/)[0];
 				if (!channel_list.includes(claim_id)) {
 					channel_list.push(claim_id);
 					category_search_params[this.id] = channel_list;
 
 					let preview_text = document.createElement("label");
 					preview_text.classList.add("preview_option");
-					preview_text.innerText = lbry_url + " X";
+					preview_text.innerText = claim.short_url.replace('#', ':').substr(7) + " X";
 					preview_text.onclick = () => {
 						preview_text.remove();
 						console.log("id: " + this.id);
 						category_search_params[this.id].splice(category_search_params[this.id].indexOf(claim_id), 1);
 					};
 					this.value = "";
-					inputs_div.insertBefore(preview_text, this.nextSibling); 
-
+					this.parentElement.insertBefore(preview_text, this.nextSibling); 
+				} else {
+					addNotification(`"${claim.short_url.replace('#', ':').substr(7)}" already in list`, 3000);
 				}
 				console.log(category_search_params[this.id]);
+			} else {
+				addNotification(claim.error.text, 3000);
 			}
 		});
 	}
@@ -289,18 +306,21 @@ function getOrderBy() {
 			order_button.remove();
 			entry_div.remove();
 			options.forEach((option) => {
-			if (option.text == text)
+			if (option.text == text) {
 					option.hidden = false;
+			}
 		});
 
 		};
 		entry_div.append(preview_text);
 		entry_div.append(order_button);
-		inputs_div.insertBefore(entry_div, this.nextSibling); 
+		this.parentElement.insertBefore(entry_div, this.nextSibling); 
 		this.value = "empty";
 		options.forEach((option) => {
-			if (option.text == text)
+				console.log(text);
+			if (option.text == text) {
 				option.hidden = true;
+			}
 		});
 	}
 }
@@ -334,8 +354,10 @@ function getTextArray(e, elem) {
 					category_search_params[search_param].splice(category_search_params[search_param].indexOf(text), 1);
 					elem.focus();
 				};
-				inputs_div.insertBefore(preview_text, elem.nextSibling); 
+				elem.parentElement.insertBefore(preview_text, elem.nextSibling); 
 				elem.value = "";
+			} else {
+				addNotification(`"${text}" already in list`, 3000);
 			}
 		}
 	}
@@ -345,27 +367,45 @@ function getCheckBox() {
 	category_search_params[this.id] = this.checked;
 }
 
-function doSearch() {
+function doSearch(category_params = null) {
 	document.querySelector("#claim_list").innerText = "";
-	sendSearchParams(category_search_params);
+	console.log(category_search_params);
+	if (category_params === null) {
+		category_params = category_search_params;
+		category_params.page = 1;
+	}
+	sendSearchParams(category_params, {}, true);
 }
 
-function saveCategory() {
+function saveCategory(e, is_temp_category = false) {
 	let localStorage = window.localStorage;
+	let category_name = "";
 	let category_name_input = document.querySelector("#category_name");
-	let category_name = category_name_input.value;
-	delete category_search_params.page; // Page is only used for testing, doesn't need to be saved
+	console.log(is_temp_category);
+	if (!is_temp_category) {
+		category_name = category_name_input.value;
+		delete category_search_params.page; // Page is only used for testing, doesn't need to be saved
+	} else {
+		category_name = "_temp_";
+		console.log(category_search_params);
+	}
 	if (category_name) {
 		let category_names = JSON.parse(localStorage.getItem("category_names"));
-		if (!category_names)
+		let action = "Updated";
+		if (!category_names) {
 			category_names = [];
-		category_names.push(category_name);
-		category_names.sort();
+		}
+		if (!category_names.includes(category_name)) {
+			action = "Saved";
+			category_names.push(category_name);
+			category_names.sort();
+		}
 		localStorage.setItem("category_names", JSON.stringify(category_names));
 		localStorage.setItem("category_" + category_name, JSON.stringify(category_search_params));
-		category_name_input.value = "";
+		if (!is_temp_category) {
+			addNotification(`${action} "${category_name}"`, 2000); 
+		}
 	}
-
 }
 
 function main() {
@@ -380,13 +420,14 @@ function main() {
 	open_pop_up_button.onclick = openPopUp;
 
 	// Set div buttons
-
 	let import_category_button = document.querySelector("#import_category_button");
 	import_category_button.onclick = loadCategory;
 
-
 	let x_button = document.querySelector("#hide_button");
 	x_button.onclick = hidePopUp;
+
+	let delete_btn = document.querySelector("#delete_button");
+	delete_button.onclick = deleteCategory;
 
 
 	let getTextInputs = document.querySelectorAll(".get_text");
@@ -421,19 +462,47 @@ function main() {
 	order_by_selector.addEventListener("change", getOrderBy);
 
 	//Get claim type
-	let claim_type_check_boxes = document.querySelectorAll("#claim_type_check_box");
+	let claim_type_check_boxes = document.querySelectorAll(".claim_type_check_box");
 	claim_type_check_boxes.forEach((check_box) => {
 		check_box.addEventListener("click", getClaimType);
 	});
 
+	// Load last tested category
+	let temp_category = JSON.parse(localStorage.getItem("category__temp_"));
+	if (temp_category) {
+		let category = {"category_name": "_temp_", category: temp_category};
+		fillFormFields(category);
+		doSearch(temp_category);
+	}
+
 
 	// Set test button
 	let test_button = document.querySelector("#test_button");
-	test_button.onclick = doSearch;
+	test_button.onclick = () => {
+		saveCategory(is_temp = true);
+		doSearch();
+	};
+
+	// Set clear button
+	let clear_button = document.querySelector("#clear_params_btn");
+	clear_button.onclick = () => {
+		let category = {"category_name": "", "category": default_category};
+		fillFormFields(category);
+		saveCategory(is_temp = true)
+	};
 
 	// Set save button
 	let save_button = document.querySelector("#save_button");
 	save_button.onclick = saveCategory;
+
+
+	// Set show advanced params toggle
+	let advanced_params_span = document.querySelector("#show_advanced_params_span");
+	advanced_params_span.onclick = (e) => {
+		let advanced_params_div = document.querySelector("#advanced_input_div");
+		advanced_params_div.hidden = !advanced_params_div.hidden;
+		e.target.innerText = advanced_params_div.hidden ? "show" : "hide";
+	};
 
 }
 main();
