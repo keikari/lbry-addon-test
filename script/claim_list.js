@@ -267,23 +267,26 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 	}
 	doACall("claim_search", search_params, (response) => {
 		addClaimsToList(response, channel_claim, search_params);
-		// Set onScroll after the very first page has returned
-		window.onscroll = () => {
+
+		function getNextResultPage() {
 			if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-				search_params.page++;
+				// Disable scroll to only allow one call at time
+				window.onscroll = null;
+				search_params.page++; 
 				doACall("claim_search", search_params, (response) => {
-					// Stop looking for more claims when there aren't any
-					if (response.result.items.length == 0) {
-						window.onscroll = null;
+					// Restore onscroll functionality if there may be more results
+					if (response.result.items.length != 0) {
+						setTimeout(() => {window.onscroll = getNextResultPage}, 100);
 					}
 					addClaimsToList(response, channel_claim, search_params);
 					if (is_temp_category && search_params.page > 2) {
-						_search_params.page = search_params.page - 1;
+						_search_params.page = search_params.page - 1; //Update page value in original params, this is so going back from opened video gets you back in same plac
 						localStorage.setItem("category__temp_", JSON.stringify(_search_params));
 					}
 				});
 			}
 		}
+		window.onscroll = getNextResultPage;
 	});
 }
 // Channel claim is optional
