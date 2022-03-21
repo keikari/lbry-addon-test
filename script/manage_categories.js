@@ -89,10 +89,16 @@ function fillFormFields(category) {
 					element.dispatchEvent(e);
 				});
 			} else {
-				if (element.id.match("amount"))
-					element.value = value / 100000000;
-				else
+				if (element.id.match("amount") && element.id != "fee_amount") {
+					let value_prefix = "";
+					if (isNaN(value)) {
+						let rx = /([<>=]{0,2})([0-9]+)/;
+						[_, value_prefix, value] = value.match(rx);
+					}
+					element.value = `${value_prefix}${value / 100000000}`;
+				} else {
 					element.value = value;
+				}
 				element.dispatchEvent(e);
 			}
 		}
