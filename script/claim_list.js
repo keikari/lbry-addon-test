@@ -265,6 +265,34 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 		search_params.not_tags = Array.isArray(search_params.not_tags) ? search_params.not_tags : [];
 		search_params.not_tags = search_params.not_tags.concat(default_not_tags);
 	}
+	Object.keys(search_params).forEach((key) => {
+		console.log(key);
+		if (key.match("relative")) {
+			let value = search_params[key];
+			let date = new Date();
+			let time = parseInt(date.getTime() / 1000);
+			let time_side = value.side === "ago" ? -1 : 1;
+			let check_word = value.side === "ago" ? "over" : "under";
+			let prefix = value.direction == check_word ? '<' : ">";
+			if (value.amount == 0) {
+				search_params[value.real_param] = prefix + time;
+				return
+			}
+			let time_type_in_seconds = 0;
+			if (value.type === "hours") {
+				time_type_in_seconds = 3600;
+			} else if (value.type === "days") {
+				time_type_in_seconds = 3600 * 24;
+			} else if (value.type === "months") {
+				time_type_in_seconds = 3600 * 24 * 30
+			}
+			let time_change = value.amount * time_type_in_seconds * time_side; 
+			//time = `${prefix}${time - time_offset + time_change}`;
+			time = `${prefix}${time + time_change}`;
+			console.log(time);
+			search_params[value.real_param] = time;
+		}
+	});
 	doACall("claim_search", search_params, (response) => {
 		addClaimsToList(response, channel_claim, search_params);
 

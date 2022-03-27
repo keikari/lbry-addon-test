@@ -184,8 +184,8 @@ function getText(e, elem) {
 				preview_text.remove();
 				elem.hidden = false;
 				elem.focus();
-
 			};
+			console.log(elem);
 			elem.hidden = true;
 			elem.parentElement.insertBefore(preview_text, elem); 
 		}
@@ -418,6 +418,153 @@ function saveCategory(is_temp_category = false) {
 	}
 }
 
+function createTimeLabel(param) {
+	let preview_text = document.createElement("label");
+	preview_text.classList.add("preview_option");
+	preview_text.classList.add(param.replace("relative_", ""));
+	let text = category_search_params[param];
+
+	let prefix = "";
+	let value = category_search_params[param]; 
+	if (isNaN(category_search_params[param]) && !(category_search_params[param] instanceof Object)) {
+		prefix = value.substr(0,1);
+		value = parseInt(value.substr(1));
+	}
+	let date = new Date(value*1000);
+	let timezone_offset = date.getTimezoneOffset() * 60;
+	if (param.match("relative"))
+	{
+		text = `${value.direction} ${value.amount} ${value.type} ${value.side}`;
+	} else if ((value - timezone_offset) % (60 * 60 * 24) === 0) {
+		text = date.toLocaleString();
+	}
+	preview_text.innerText = text + " X";
+	preview_text.onclick = () => {
+		preview_text.remove();
+		delete category_search_params[param]
+	};
+
+	return preview_text;
+}
+
+function createTimeInput(time_type, time_param) {
+	//Delete existing time input for param
+	try {
+		document.querySelector(`.time_input.${time_param}`).remove();
+	} catch {}
+
+	let time_input_div = document.createElement("div");
+	time_input_div.classList.add("time_input"); 
+	time_input_div.classList.add(time_param); 
+	let label = document.createElement("label");
+	let confirm_btn = document.createElement("button");
+	confirm_btn.innerText = "Set";
+	if (time_type === "relative_time") {
+		label.innerText = "Relative time:";
+
+		let time_direction_input = document.createElement("select");
+		let time_direction_options = ["over", "under"];
+		time_direction_options.forEach(time_option => {
+			let option = document.createElement("option");
+			option.value = time_option;
+			option.innerText = time_option;
+			time_direction_input.append(option);
+		});
+		
+		let time_amount_input = document.createElement("input");
+		time_amount_input.type = "text";
+		time_amount_input.classList.add("time_amount_input");
+		
+		let time_type_input = document.createElement("select");
+		let time_options = ["hours", "days", "months", "years"];
+		time_options.forEach(time_option => {
+			let option = document.createElement("option");
+			option.value = time_option;
+			option.innerText = time_option;
+			time_type_input.append(option);
+		});
+
+		let time_side_input = document.createElement("select");
+		let time_side_options = ["ago", "to release"];
+		time_side_options.forEach(time_option => {
+			let option = document.createElement("option");
+			option.value = time_option;
+			option.innerText = time_option;
+			time_side_input.append(option);
+		});
+
+		confirm_btn.onclick = () => {
+			let amount = time_amount_input.value;
+			let type = time_type_input.value;
+			let direction = time_direction_input.value;
+			let side = time_side_input.value;
+			category_search_params[`relative_${time_param}`] = { 
+				amount: amount,
+				type: type,
+				direction: direction,
+				side: side,
+				real_param: time_param
+			}
+			console.log(category_search_params);
+			let preview_text = createTimeLabel(`relative_${time_param}`);
+			time_type_label.parentElement.insertBefore(preview_text, time_type_label.nextSibling);
+			time_input_div.remove();
+		}
+		time_input_div.append(label);
+		time_input_div.append(time_direction_input);
+		time_input_div.append(time_amount_input);
+		time_input_div.append(time_type_input);
+		time_input_div.append(time_side_input);
+
+	} else if (time_type === "fixed_time") {
+		label.innerText = "Fixed time:";
+
+		let time_direction_input = document.createElement("select");
+		let time_direction_options = ["since", "before"];
+		time_direction_options.forEach(time_option => {
+			let option = document.createElement("option");
+			option.value = time_option;
+			option.innerText = time_option;
+			time_direction_input.append(option);
+		});
+
+		let time_date_input = document.createElement("input");
+		time_date_input.type = "date";
+
+		confirm_btn.onclick = () => {
+			let prefix = time_direction_input.value === "since" ? '>' : '<';
+			let date_offset = new Date(time_date_input.valueAsNumber).getTimezoneOffset() * 60;
+			let time = (time_date_input.valueAsNumber/1000) + date_offset;
+			category_search_params[time_param] = prefix + time;
+			console.log(category_search_params);
+			let preview_text = createTimeLabel(time_param);
+			time_type_label.parentElement.insertBefore(preview_text, time_type_label.nextSibling);
+			time_input_div.remove();
+		};
+		time_input_div.append(label);
+		time_input_div.append(time_direction_input);
+		time_input_div.append(time_date_input);
+
+	} else if (time_type === "unix_time") {
+		label.innerText = "Unix time:";
+		let time_input = document.createElement("input");
+		confirm_btn.onclick = () => {
+			category_search_params[time_param] = time_input.value;
+			console.log(category_search_params);
+			let preview_text = createTimeLabel(time_param);
+			time_type_label.parentElement.insertBefore(preview_text, time_type_label.nextSibling);
+			time_input_div.remove();
+		};
+		time_input_div.append(label);
+		time_input_div.append(time_input);
+
+	}
+	let time_type_label = document.querySelector(`#${time_param}`);
+	time_input_div.append(confirm_btn);
+	time_type_label.parentElement.insertBefore(time_input_div, time_type_label.nextSibling);
+
+}
+
 function main() {
 	let inputs_div = document.querySelector("#inputs_div");
 	if (!inputs_div) {
@@ -477,6 +624,35 @@ function main() {
 		check_box.addEventListener("click", getClaimType);
 	});
 
+	//Get time inputs
+	let time_input_toggles = document.querySelectorAll(".time_span_toggle");
+	time_input_toggles.forEach((toggle) => {
+		let time_param = toggle.parentElement.id;
+		let time_type = toggle.getAttribute("time_type");
+		toggle.onclick = () => {
+			let preview_texts = document.querySelectorAll(".preview_option");
+			preview_texts.forEach((preview) => {
+				if (preview.classList.contains(time_param)) {
+					delete category_search_params[time_param]
+					delete category_search_params[`relative_${time_param}`]
+					preview.remove();
+				}
+			});
+			createTimeInput(time_type, time_param);
+		};
+	});
+	
+
+	//Set show time div spans
+	let time_div_spans = document.querySelectorAll(".show_time_settings_span");
+	time_div_spans.forEach( (span) => {
+		span.onclick = () => {
+			let target_div_name = span.parentElement.getAttribute("for");
+			let target_div = document.querySelector(`#${target_div_name}`);
+			target_div.hidden = !target_div.hidden;
+		};
+	});
+
 	// Load last tested category
 	let temp_category = JSON.parse(localStorage.getItem("category__temp_"));
 	if (temp_category) {
@@ -513,6 +689,7 @@ function main() {
 		advanced_params_div.hidden = !advanced_params_div.hidden;
 		e.target.innerText = advanced_params_div.hidden ? "show" : "hide";
 	};
+
 
 }
 main();

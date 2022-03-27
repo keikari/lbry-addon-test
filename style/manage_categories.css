@@ -76,6 +76,18 @@ h3 {
 	font-size: 16px;
 	text-decoration: underline;
 }
+.time_span_toggle {
+	text-decoration: underline;
+}
+.time_input {
+	margin: 5px 0px;
+}
+.time_input > input {
+	max-width: 80px;
+}
+.time_input > .time_amount_input {
+	max-width: 30px;
+}
 #basic_params {
 	float: left;
 }
@@ -87,15 +99,19 @@ h3 {
 }
 .input_div > label{
 	padding: 3px 0px;
+	color: #eee;
 }
 .input_div > input{
 	background: #555;
 	border: none;
 	color: white;
+	display: block;
+}
+#save_category_div > label {
+	display: block;
 }
 label {
 	color: #eee;
-	display: block;
 }
 .preview_option {
 	background: #111;

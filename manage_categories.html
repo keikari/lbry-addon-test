@@ -83,6 +83,11 @@
 							<label for="fee_amount">Fee amount(supports equality constraints)</label>
 							<input class="get_text" type="text" id="fee_amount">
 						</div>
+						<label id="release_time" class="time_label">Release time 
+							<span time_type="relative_time" class="toggle_relative_time_span time_span_toggle">Relative</span>
+							<span time_type="fixed_time" class="toggle_fixed_time_input_span time_span_toggle">Fixed</span>
+							<span time_type="unix_time" class="toggle_unix_time_input_span time_span_toggle">Unix</span>
+						</label>
 						<div class="input_div">
 							<label for="not_tags">None of these tags</label>
 							<input class="get_text_array" type="text" id="not_tags">
@@ -192,22 +197,21 @@
 								<label for="heigth">Last updated in block: (supports equality constraints)</label>
 								<input class="get_text" type="text" id="height">
 							</div>
-							<div class="input_div">
-								<label for="release_time">Release time: (supports equality constraints)</label>
-								<input class="get_text" type="text" id="release_time">
-							</div>
-							<div class="input_div">
-								<label for="timestamp">Last updated time in seconds, UNIX time, seconds (supports equality constraints)</label>
-								<input class="get_text" type="text" id="timestamp">
-							</div>
+							<br>
+							<label id="timestamp" class="time_label">Last updated 
+								<span time_type="relative_time" class="toggle_relative_time_span time_span_toggle">Relative</span>
+								<span time_type="fixed_time" class="toggle_fixed_time_input_span time_span_toggle">Fixed</span>
+								<span time_type="unix_time" class="toggle_unix_time_input_span time_span_toggle">Unix</span>
+							</label>
 							<div class="input_div">
 								<label for="creation_height">Created in block:(supports equality constraints)</label>
 								<input class="get_text" type="text" id="creation_height">
 							</div>
-							<div class="input_div">
-								<label for="creation_timestamp">Creation time in seconds, UNIX time (supports equality constraints)</label>
-								<input class="get_text" type="text" id="creation_timestamp">
-							</div>
+							<label id="creation_timestamp" class="time_label">Created at 
+								<span time_type="relative_time" class="toggle_relative_time_span time_span_toggle">Relative</span>
+								<span time_type="fixed_time" class="toggle_fixed_time_input_span time_span_toggle">Fixed</span>
+								<span time_type="unix_time" class="toggle_unix_time_input_span time_span_toggle">Unix</span>
+							</label>
 							<div class="input_div">
 								<label for="activation_height">Activates in block:(supports equality constraints)</label>
 								<input class="get_text" type="text" id="activation_height">
