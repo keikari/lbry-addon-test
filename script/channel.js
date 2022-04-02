@@ -26,6 +26,10 @@ function channel_main() {
 			search_params = {
 				channel: channel,
 				order_by: "release_time",
+				claim_type: [
+					"stream",
+					"repost",
+				],
 			};
 			let channel_claim = response.result[lbryUrl];
 			setInfo(channel_claim);
