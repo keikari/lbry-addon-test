@@ -1,4 +1,3 @@
-var server = "hpag://lbry.com/faq/thumbnails-and-coversttp://localhost:5279";
 var current_page = 1;
 var last_page = 1;
 

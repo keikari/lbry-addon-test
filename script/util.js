@@ -1,9 +1,22 @@
 var default_not_tags = ["porn","porno","nsfw","mature","xxx","sex","creampie","blowjob","handjob","vagina","boobs","big boobs","big dick","pussy","cumshot","anal","hard fucking","ass","fuck","hentai"];
 
+
+var server = window.localStorage.getItem("server_url");
+var api_port = window.localStorage.getItem("api_port");
+var stream_port = window.localStorage.getItem("stream_port");
+if (!server) {
+	server = "http://localhost";
+}
+if (!api_port) {
+	api_port = "5279";
+}
+if (!stream_port) {
+	stream_port = "5280";
+}
+
 function cleanHTML(text) {
 	return DOMPurify.sanitize(text, { USE_PROFILES: { html: true } });
 }
-
 
 function itemInArray(item, array) {
 	let L = 0;
@@ -54,9 +67,9 @@ function itemInArray(item, array) {
 
 
 function doACall(method, params, callback = (a, b) => {}, kwargs = {}) {
-	let server = "http://localhost:5279";
+	let server_url = `${server}:${api_port}`;
 	let xhr = new XMLHttpRequest();
-	xhr.open("POST", server, true);
+	xhr.open("POST", server_url, true);
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			let response = JSON.parse(xhr.response);

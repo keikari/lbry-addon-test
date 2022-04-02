@@ -1,6 +1,5 @@
 var lbryUrl = document.URL.match(new RegExp(/lbry:\/\/.*/))[0];
 lbryUrl = decodeURIComponent(lbryUrl);
-let server = "http://localhost";
 var iframe;
 var localStorage = window.localStorage;
 
@@ -134,7 +133,7 @@ function moveVideoToFloatingPlayer(sd_hash, time) {
 		return;
 	let floating_player = document.querySelector("#floating_player");
 	let video = iframe.contentWindow.document.querySelector("video");
-	floating_player.src = server+":5280/stream/"+sd_hash;
+	floating_player.src = `${server}:${stream_port}/stream/${sd_hash}`;
 	floating_player.currentTime = time;
 	floating_player.hidden = false;
 	floating_player.controls = true;
@@ -277,4 +276,27 @@ window.onload = () => {
 	wallet_btn.onclick = () => { iframe.src = "transactions.html" };
 
 	getBlockLists();
+
+	let set_server_btn = document.querySelector("#set_server_btn");
+	set_server_btn.onclick = () => {
+		let server_url = document.querySelector("#server_url").value;
+		let api_port = document.querySelector("#api_port").value;
+		let stream_port = document.querySelector("#stream_port").value;
+
+		if (server_url != "") {
+			localStorage.setItem("server_url", server_url);
+		} else {
+			localStorage.removeItem("server_url");
+		}
+		if (api_port != "") {
+			localStorage.setItem("api_port", api_port);
+		} else {
+			localStorage.removeItem("api_port");
+		}
+		if (stream_port != "") {
+			localStorage.setItem("stream_port", stream_port);
+		} else {
+			localStorage.removeItem("stream_port");
+		}
+	}
 };

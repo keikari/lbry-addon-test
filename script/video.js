@@ -286,7 +286,7 @@ function createVideo(claim) {
 	let content_div = document.querySelector("#content_div");
 	video.autoplay = false;
 	video.sd_hash = claim.metadata.source.sd_hash;
-	video.src = 'http://localhost:5280/stream/'+video.sd_hash;
+	video.src = `${server}:${stream_port}/stream/`+video.sd_hash;
 	video.poster = claim.metadata.thumbnail.url;
 	video.controls = true;
 	video.style.width="100%";
@@ -308,7 +308,7 @@ function createVideo(claim) {
 }
 
 function createDocument(claim) {
-	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
+	let stream_url = `${server}:${stream_port}/stream/`+claim.metadata.source.sd_hash;
 	let xhr = new XMLHttpRequest();
 	xhr.open("GET", stream_url, true);
 	xhr.onreadystatechange = function() {
@@ -322,7 +322,7 @@ function createDocument(claim) {
 }
 
 function createIframe(claim) {
-	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
+	let stream_url = `${server}:${stream_port}/stream/`+claim.metadata.source.sd_hash;
 	let content_div = document.querySelector("#content_div");
 	let iframe = document.createElement("iframe");
 	iframe.src = stream_url;
@@ -335,7 +335,7 @@ function createIframe(claim) {
 function createImage(claim) {
 	let content_div = document.querySelector("#content_div");
 	let img = document.createElement("img");
-	let stream_url = 'http://localhost:5280/stream/'+claim.metadata.source.sd_hash;
+	let stream_url = `${server}:${stream_port}/stream/`+claim.metadata.source.sd_hash;
 	img.src = stream_url;
 	content_div.append(img);
 }
