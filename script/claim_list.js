@@ -265,31 +265,38 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 		search_params.not_tags = Array.isArray(search_params.not_tags) ? search_params.not_tags : [];
 		search_params.not_tags = search_params.not_tags.concat(default_not_tags);
 	}
+	// Handle relative time params
 	Object.keys(search_params).forEach((key) => {
-		console.log(key);
 		if (key.match("relative")) {
 			let value = search_params[key];
 			let date = new Date();
 			let time = parseInt(date.getTime() / 1000);
-			let time_side = value.side === "ago" ? -1 : 1;
-			let check_word = value.side === "ago" ? "over" : "under";
+			let date_obj = {
+				years: date.getFullYear(),
+				months: date.getMonth(),
+				days: date.getDate(),
+				hours: date.getHours(),
+				minutes: date.getMinutes()
+			};
+			let time_side = value.side === "ago" ? -1 : 1; // Is wanted timepoint in the past or future
+			let check_word = value.side === "ago" ? "over" : "under"; // No sure why, but this seems to work so it must make sense
 			let prefix = value.direction == check_word ? '<' : ">";
 			if (value.amount == 0) {
+				// Time is now, no need for fanciness
 				search_params[value.real_param] = prefix + time;
 				return
 			}
-			let time_type_in_seconds = 0;
-			if (value.type === "hours") {
-				time_type_in_seconds = 3600;
-			} else if (value.type === "days") {
-				time_type_in_seconds = 3600 * 24;
-			} else if (value.type === "months") {
-				time_type_in_seconds = 3600 * 24 * 30
-			}
-			let time_change = value.amount * time_type_in_seconds * time_side; 
-			//time = `${prefix}${time - time_offset + time_change}`;
-			time = `${prefix}${time + time_change}`;
-			console.log(time);
+
+			date_obj[value.type] += value.amount * time_side; // Time side means positive or negative change
+			let new_date = new Date(
+				date_obj.years,
+				date_obj.months,
+				date_obj.days,
+				date_obj.hours,
+				date_obj.minutes,
+			);
+			time = parseInt(new_date.getTime() / 1000);
+			time = `${prefix}${time}`;
 			search_params[value.real_param] = time;
 		}
 	});

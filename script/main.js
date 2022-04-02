@@ -174,7 +174,7 @@ function handleFloatingPlayer(interval_id = null) {
 	let isVideoPage = iframe.contentWindow.document.documentURI.match("video.html");;
 	if (!video && isVideoPage) {
 		if (interval_id == null) {
-			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 500);
+			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 100);
 			setTimeout(() => clearInterval(interval_id), 1000 * 10); // Wait video for max 10s
 		}
 	} else if (video) {
