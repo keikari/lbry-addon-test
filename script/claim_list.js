@@ -349,7 +349,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 
 		// Check that claim isn't in filter or block list
 		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
-			return;
+			//return;
 		}
 		
 		// Just create this in somewhere

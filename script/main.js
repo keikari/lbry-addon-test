@@ -1,7 +1,93 @@
 var lbryUrl = document.URL.match(new RegExp(/lbry:\/\/.*/))[0];
 lbryUrl = decodeURIComponent(lbryUrl);
 var iframe;
+var floating_player;
 var localStorage = window.localStorage;
+
+class FloatingPlayer {
+	constructor() {
+		this.video_element = document.querySelector("#floating_player");
+		this.sd_hash = null;
+		this.video_duration = 0;
+		this.start_timestamp = 0;
+		this.video_element.onloadeddata = () =>  {this.doOnLoadedData()};
+
+		this.time_tracker_interval_id = null;
+	}
+
+	doOnLoadedData() {
+		console.log("Floating player loaded");
+		this.video_element.currentTime = this.start_timestamp;
+		this.updateDuration();
+		this.startSavingTimestamp();
+	}
+
+	close() {
+		this.stopSavingTimestamp();
+		this.video_element.pause();
+		this.video_element.style.height = 0;
+		this.video_element.hidden = true;
+	}
+
+	show() {
+		this.updateSource();
+		this.video_element.play();
+		this.video_element.controls = true;
+		this.video_element.style = "";
+		this.video_element.hidden = false;
+	}
+
+	updateSource() {
+		this.video_element.src = `${server}:${stream_port}/stream/${this.sd_hash}`;
+	}
+
+	updateDuration() {
+		this.video_duration = this.video_element.duration;
+	}
+
+	startSavingTimestamp() {
+		if (this.getDuration() > 300) {
+			this.time_tracker_interval_id = setInterval(() => {
+				let currentTime = this.getCurrentTime();
+				if (currentTime <= (this.video_duration * 0.9))
+					localStorage.setItem(this.sd_hash, currentTime);
+				else
+					localStorage.removeItem(this.sd_hash);
+			}, 1000 * 1);
+		}
+	}
+
+	stopSavingTimestamp() {
+		clearInterval(this.time_tracker_interval_id);
+	}
+
+	hasSource() {
+		return this.video_element.src != "";
+	}
+
+	getCurrentTime() {
+		return this.video_element.currentTime;
+	}
+
+	getDuration() {
+		return this.video_duration;
+	}
+
+
+	getSd_hash() {
+		return this.sd_hash;
+	}
+
+	setStartTime(time) {
+		this.start_timestamp = time;
+	}
+	setSd_hash(sd_hash) {
+		console.log("Sd_hash set");
+		this.sd_hash = sd_hash;
+	}
+
+};
+
 
 function createCategoryItem(name) {
 	let category_list_item = document.createElement("p");
@@ -80,69 +166,11 @@ function updateWalletBalance() {
 	});
 }
 
-function floatToMainPlayer(video) {
-	let floating_player = document.querySelector("#floating_player");
-	if (floating_player.sd_hash === video.sd_hash && floating_player.currentTime != 0) {
-		window.localStorage.setItem(video.sd_hash, floating_player.currentTime + 2);
-		floating_player.pause();
-		floating_player.id = "";
-		video.play();
-		video.currentTime = floating_player.currentTime;
-	}
-	floating_player.id = "floating_player";
-	floating_player.hidden = true;
-	floating_player.style.height = "0px";
-	floating_player.src = "";
-	floating_player.sd_hash = "";
-	clearInterval(floating_player.interval);
-}
-
 function doSearch() {
 		var search_text = document.querySelector("#search_input").value;
-		let page = getClaimTypeFromUrl(search_text);
+		let page = getPageForUrl(search_text);
 		page = "search.html";
 		iframe.src = page + "?search_term=" + search_text;
-}
-
-function trackPlayerTime(sd_hash, video, setTime) {
-	if (!video.duration){
-		setTimeout(() => trackPlayerTime(sd_hash, video, setTime), 200);
-		console.log("Looking for floating_player duration");
-		return;
-	}
-	console.log("Floating player duration: " + video.duration);
-	if (video.duration > 300){
-		let time = localStorage.getItem(sd_hash);
-		if (time && setTime)
-			video.currentTime = (time - 2 >= 0 ? time - 2 : time);
-
-		if (video.interval)
-			clearInterval(video.interval);
-		video.interval = setInterval(() => {
-			let currentTime = video.currentTime;
-			if (currentTime > 30 && ! (currentTime >= (video.duration * 0.9)))
-				localStorage.setItem(sd_hash, currentTime);
-			else
-				localStorage.removeItem(sd_hash);
-		}, 3000);
-	}
-}
-
-function moveVideoToFloatingPlayer(sd_hash, time) {
-	if (time === 0)
-		return;
-	let floating_player = document.querySelector("#floating_player");
-	let video = iframe.contentWindow.document.querySelector("video");
-	floating_player.src = `${server}:${stream_port}/stream/${sd_hash}`;
-	floating_player.currentTime = time;
-	floating_player.hidden = false;
-	floating_player.controls = true;
-	floating_player.sd_hash = sd_hash;
-	floating_player.style = "";
-	trackPlayerTime(sd_hash, floating_player, false);
-	if (!video.isPaused)
-		floating_player.play();
-
 }
 
 function getBlockLists() {
@@ -168,66 +196,129 @@ function getBlockLists() {
 
 }
 
-function handleFloatingPlayer(interval_id = null) {
+
+function getVideoPlayerFromIframe(iframe) {
 	let video = iframe.contentWindow.document.querySelector("video");
-	let isVideoPage = iframe.contentWindow.document.documentURI.match("video.html");;
-	if (!video && isVideoPage) {
-		if (interval_id == null) {
-			interval_id = setInterval(() => handleFloatingPlayer(interval_id), 100);
-			setTimeout(() => clearInterval(interval_id), 1000 * 10); // Wait video for max 10s
-		}
-	} else if (video) {
-		clearInterval(interval_id);
-		let sd_hash = video.sd_hash;
-		floating_player = document.querySelector("#floating_player");
-		if (floating_player.sd_hash == sd_hash) {
-			floatToMainPlayer(video);
-		} else if (floating_player.src || floating_player.querySelector("source")) {
-			video.onplay = () => {floatToMainPlayer(video)};
-		}
-		let body = iframe.contentWindow.document.querySelector("body");
-		body.onunload = () => {
-			video = iframe.contentWindow.document.querySelector("video");
-			if (video) {
-				let time = video.currentTime;
-				console.log("Time: " + time);
-				if (!video.paused)
-					moveVideoToFloatingPlayer(sd_hash, time)
-			}
-		};
+	return video;
+
+}
+function isIframeVideoPage(iframe) {
+	let is_video_page = iframe.contentWindow.document.documentURI.match("video.html");
+	return is_video_page;
+}
+
+function isVideoInFloatingPlayerSameAsVideo(video) {
+	console.log(floating_player.getSd_hash());
+	console.log(video.sd_hash);
+	return floating_player.getSd_hash() == video.sd_hash;
+}
+
+function moveVideoToFloatingPlayer(video) {
+	if (!video.paused) {
+		floating_player.setSd_hash(video.sd_hash);
+		floating_player.setStartTime(video.currentTime);
+		floating_player.show();
 	}
+}
+
+function setVideoToBeMovedInFloatingPlayerWhenNavigatingElsewhere(video) {
+	let body = iframe.contentWindow.document.querySelector("body");
+	body.onunload = () => moveVideoToFloatingPlayer(video);
+}
+
+function copyTimeFromFloatingPlayerToVideoElement(video) {
+	console.log(floating_player.getCurrentTime());
+	video.currentTime = floating_player.getCurrentTime();
+}
+
+function setFloatingPlayerToCloseOnVideoElementOnplay(video) {
+	video.onplay = () => { 
+		floating_player.close();
+		video.onplay = "";
+	};
+}
+
+function continueVideoFromFloatingPlayerInVideoElement(video) {
+	copyTimeFromFloatingPlayerToVideoElement(video);
+	floating_player.close();
+	video.play();
+}
+
+function prepareVideoPlayerForFloating(video) {
+	if (isVideoInFloatingPlayerSameAsVideo(video)) {
+		continueVideoFromFloatingPlayerInVideoElement(video);
+	} else {
+		setFloatingPlayerToCloseOnVideoElementOnplay(video);
+	}
+	setVideoToBeMovedInFloatingPlayerWhenNavigatingElsewhere(video);
+
+}
+async function tryToGetVideoPlayerFromIframe(iframe) {
+	while (true) {
+		let video = getVideoPlayerFromIframe(iframe);
+		if (video) {
+			return video;
+		}
+		await sleep(100);
+	}
+}
+
+function handleFloatingPlayer(iframe) {
+	if (isIframeVideoPage(iframe)) {
+		tryToGetVideoPlayerFromIframe(iframe).then( (video) => prepareVideoPlayerForFloating(video) );
+	}
+}
+
+function checkIsIframePageExpectedToUpdateWindowTitle() {
+	let iframe = document.querySelector("iframe");
+	// Only video.html and channel.html pages should update title
+	let is_content_page = iframe.contentDocument.documentURI.match("video.html");
+	let is_channel_page = iframe.contentDocument.documentURI.match("channel.html");
+
+	return (is_content_page || is_channel_page)
+}
+
+function setWindowTitle () {
+	let will_iframe_update_window_title = checkIsIframePageExpectedToUpdateWindowTitle();
+	if (!will_iframe_update_window_title) {
+		window.document.title = "LBRY";
+	}
+}
+
+
+
+function setIframeOnLoad(iframe) {
+	iframe.onload = () => {
+		setWindowTitle();
+		handleFloatingPlayer(iframe);
+		updateWalletBalance();
+		listCategories();
+	};
+}
+
+function setupMainIframe() {
+	iframe = document.querySelector("iframe");
+	setIframeOnLoad(iframe);
 
 }
 
 window.onload = () => {
-	window.document.title = "LBRY";
-	iframe = document.querySelector("iframe");
-	let page = getClaimTypeFromUrl(lbryUrl);
-	console.log("window loaded");
-
+	floating_player = new FloatingPlayer();
+	setWindowTitle();
+	setupMainIframe();
+	handleFloatingPlayer(iframe);
+	//setupFloatingPlayer();
 	listCategories();
 
-	let floating_player = document.querySelector("#floating_player");
-	floating_player.parentElement.style.height = 0;
-	floating_player.style.height = 0;
+//	let floating_player = document.querySelector("#floating_player");
+//	floating_player.parentElement.style.height = 0;
+//	floating_player.style.height = 0;
+	floating_player.close();
 
-	let count = 0;
-	handleFloatingPlayer();
-
-	iframe.onload = function () {
-		let is_content_page = iframe.contentDocument.documentURI.match("video.html");
-		let is_channel_page = iframe.contentDocument.documentURI.match("channel.html");
-		if (!is_content_page && !is_channel_page) {
-			window.document.title = "LBRY";
-		}
-		handleFloatingPlayer();
-		updateWalletBalance();
-		listCategories();
-		count = 0;
-	};
 
 	//Load start page
-	iframe.src = page + "?url=" + lbryUrl;
+	let page_name = getPageForUrl(lbryUrl);
+	iframe.src = page_name + "?url=" + lbryUrl;
 
 	// Search bar
 	document.querySelector("button").onclick = doSearch;

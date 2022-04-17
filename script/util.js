@@ -18,6 +18,11 @@ function cleanHTML(text) {
 	return DOMPurify.sanitize(text, { USE_PROFILES: { html: true } });
 }
 
+
+function sleep(ms) {
+	return new Promise( (resolve) => setTimeout(resolve, ms));
+}
+
 function itemInArray(item, array) {
 	let L = 0;
 	let R = array.length - 1;
@@ -132,11 +137,19 @@ function timeDifference(current, previous) {
 function getClaimTypeFromUrl(lbryUrl) {
 	if (lbryUrl.match(new RegExp(".*@.*")) &&
 		!lbryUrl.match(new RegExp(".*//.*/.*")))
-		return "channel.html";
+		return "channel";
 	else
-		return "video.html";
+		return "stream";
 }
 
+function getPageForUrl(lbryUrl) {
+	let claim_type = getClaimTypeFromUrl(lbryUrl);
+	if (claim_type === "channel") {
+		return "channel.html";
+	} else {
+		return "video.html";
+	}
+}
 
 
 function hexStrToAsciiStr(str) {

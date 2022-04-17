@@ -1,4 +1,4 @@
-function getClaimTypeFromUrl(lbryUrl) {
+function getPageForUrl(lbryUrl) {
 		if (lbryUrl.match(new RegExp(".*@.*")) &&
 				!lbryUrl.match(new RegExp(".*//.*/.*")))
 				return "channel.html";
@@ -21,7 +21,7 @@ function createMostSupported(claim) {
 	let data = claim.value;
 	let community_choice_div = document.querySelector("#community_choice_div");
 	a = document.querySelector("#community_choice_a");
-	a.href = getClaimTypeFromUrl(claim.permanent_url)+"?url="+claim.permanent_url;
+	a.href = getPageForUrl(claim.permanent_url)+"?url="+claim.permanent_url;
 	let thumbnail_elem = document.createElement("img");
 	let title_elem = document.createElement("h4");
 	let release_time_elem = document.createElement("p");
@@ -63,7 +63,7 @@ function search_main() {
 	window.parent.document.title = `Search: ${search_term}`;
 	// If searhing for URL naviagte to page
 	if (search_term.match(new RegExp("^lbry://.*"))) {
-		let page = getClaimTypeFromUrl(search_term);
+		let page = getPageForUrl(search_term);
 		window.location.replace(page+"?url="+search_term);
 	}
 
