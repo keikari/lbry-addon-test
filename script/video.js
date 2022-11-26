@@ -13,7 +13,7 @@ function createContentView() {
 			delete claim.value;
 		}
 		console.log(claim);
-		let mime_type = claim.mime_type;
+		let mime_type = claim.metadata.source.media_type;
 		if (mime_type.match(new RegExp("video/")) ||
 			mime_type.match(new RegExp("audio/")))
 			createVideo(claim);
@@ -515,7 +515,9 @@ function loadFromResolve() {
 			createContentView();
 		} else if (claim.value.fee) {
 			// Hande paid content
-			handlePaidContent(claim);
+			createContentView();
+
+			//handlePaidContent(claim);
 		}
 		setInfo(claim);
 	});

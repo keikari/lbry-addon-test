@@ -12,10 +12,19 @@ hr {
 	margin: 0px;
 }
 
+.claim_item.filtered_item {
+	background: #341313;
+}
+
+.claim_item.mature_item {
+	background: #745479;
+}
+
 .claim_item {
 	box-shadow: 0 0 3px black;
 	background: #1F1F1F;
 }
+
 
 .has_channel .preview_details_div {
 	top: 44px;

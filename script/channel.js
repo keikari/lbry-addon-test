@@ -25,6 +25,7 @@ function channel_main() {
 	doACall("resolve", {urls: lbryUrl}, (response) => {
 			search_params = {
 				channel: channel,
+				//order_by: ["trending_group", "trending_mixed"],
 				order_by: "release_time",
 				claim_type: [
 					"stream",

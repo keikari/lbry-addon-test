@@ -335,7 +335,7 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		claim = JSON.parse(cleanHTML(JSON.stringify(claim)));
 
 		// If using channel filters and signature is invalid, don't show publishes
-		if (claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
+		if (!search_params.show_invalid_signatures && claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
 			return;
 		}
 		let isReposted = false;
@@ -348,13 +348,30 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		}
 
 		// Check that claim isn't in filter or block list
+		let is_filtered = false;
 		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
+			is_filtered = true
+			//console.log(`Blocked: ${claim.txid}`);
 			//return;
 		}
+
+		// Add mature class
+		let is_mature = false;
+		if (claim.value.tags?.some(r => default_not_tags.includes(r))) {
+			is_mature = true;
+		}
+			
+
 		
 		// Just create this in somewhere
 		const li = document.createElement("li");
 		li.classList.add("claim_item");
+		if (is_filtered) {
+			li.classList.add("filtered_item");
+		}
+		else if (is_mature) {
+			li.classList.add("mature_item");
+		}
 		if (isReposted)
 			li.classList.add("repost");
 		if (!(!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) || claim.is_channel_signature_valid === false) {

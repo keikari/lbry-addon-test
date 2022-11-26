@@ -60,6 +60,7 @@ function createMostSupported(claim) {
 function search_main() {
 	let url = new URL(document.URL);
 	let search_term = url.searchParams.get("search_term");
+	console.log(search_term);
 	window.parent.document.title = `Search: ${search_term}`;
 	// If searhing for URL naviagte to page
 	if (search_term.match(new RegExp("^lbry://.*"))) {
@@ -69,7 +70,9 @@ function search_main() {
 
 	let lbry_url = "lbry://"+search_term.replace(/\s|"/g, "");
 	doACall("resolve", {urls: lbry_url}, (response) =>{
+		if (!response.result[lbry_url].error) {
 			createMostSupported(response.result[lbry_url]);
+		}
 	});
 
 	let search_params = {

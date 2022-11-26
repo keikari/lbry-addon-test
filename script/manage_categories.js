@@ -234,16 +234,20 @@ function getChannelUrl(e) {
 				:	obj.items[0] ? obj.items[0]
 				: null);
 			console.log(claim);
-			if (!claim.error) {
+			if (claim == null || !claim.error) {
 				let channel_list = (category_search_params[this.id] ? category_search_params[this.id] : []);
-				let claim_id = claim.permanent_url.match(/[0-9A-Fa-f]{40}$/)[0];
+				let claim_id = claim?.permanent_url.match(/[0-9A-Fa-f]{40}$/)[0] || text;
 				if (!channel_list.includes(claim_id)) {
 					channel_list.push(claim_id);
 					category_search_params[this.id] = channel_list;
 
 					let preview_text = document.createElement("label");
 					preview_text.classList.add("preview_option");
-					preview_text.innerText = claim.short_url.replace('#', ':').substr(7) + " X";
+					if (claim) {
+						preview_text.innerText = claim.short_url.replace('#', ':').substr(7) + " X";
+					} else {
+						preview_text.innerText = claim_id + " X";
+					}
 					preview_text.onclick = () => {
 						preview_text.remove();
 						console.log("id: " + this.id);

@@ -38,7 +38,7 @@ function itemInArray(item, array) {
 	return false;
 }
 
- function addNotification(text, timeout) {
+function addNotification(text, timeout) {
 	let notification_list = window.parent.document.querySelector("#notification_list");
 	let notification_item = document.createElement("li");
 	notification_item.classList.add("notification_item");
@@ -61,7 +61,7 @@ function itemInArray(item, array) {
 			notification.remove();
 			break;
 		}
-	};
+};
 
 
 	notification_list.append(notification_item);
@@ -70,11 +70,21 @@ function itemInArray(item, array) {
 
 }
 
+function resetNotificationsOnclick() {
+	let notification_list = window.parent.document.querySelector("#notification_list");
+	let notifications = notification_list.querySelectorAll("li");
+	notifications.forEach((notification) => {
+		notification.onclick = () => notification.remove();
+	});
+
+
+}
+
 
 function doACall(method, params, callback = (a, b) => {}, kwargs = {}) {
 	let server_url = `${server}:${api_port}`;
 	let xhr = new XMLHttpRequest();
-	xhr.open("POST", server_url, true);
+	xhr.open("POST", `${server_url}?m=${method}`, true);
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			let response = JSON.parse(xhr.response);

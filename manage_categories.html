@@ -41,6 +41,14 @@
 							<label for="is_controlling">Only controlling claims:</label>
 							<input class="get_check_box" type="checkbox" id="is_controlling">
 						</div>
+						<div class="input_div">
+							<label for="has_source">Has source:</label>
+							<input class="get_check_box" type="checkbox" id="has_source">
+						</div>
+						<div class="input_div">
+							<label for="show_invalid_signatures">Show invalid signatures</label>
+							<input class="get_check_box" type="checkbox" id="show_invalid_signatures">
+						</div>
 
 				</div>
 					<div id="claim_type_div">
@@ -155,6 +163,10 @@
 								<label for="page">First result page</label>
 								<input class="get_int" type="text" id="page">
 							</div>
+							<div class="input_div">
+								<label for="page_size">Page size</label>
+								<input class="get_int" type="text" id="page_size">
+							</div>
 						</div>
 					</div>
 					<div id="save_category_div">
@@ -168,6 +180,10 @@
 					<div id="advanced_options_div">
 						<h3>Advanced Parameters <span id="show_advanced_params_span">show</span></h3>
 						<div id="advanced_input_div" hidden="true">
+							<div class="input_div">
+								<label for="duration">Duration</label>
+								<input class="get_text_array" type="text" id="duration">
+							</div>
 							<div class="input_div">
 								<label for="amount">Originally staked amount (supports equality constraints)</label>
 								<input class="get_text is_amount" type="text" id="amount">

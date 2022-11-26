@@ -17,7 +17,8 @@ function category_main() {
 			search_params = {
 				channel_ids: channel_ids,
 				remove_duplicates: true,
-				order_by: "release_time"
+				//order_by: ["trending_group", "trending_mixed"]
+				order_by: "creation_height"
 			}
 			sendSearchParams(search_params);
 
