@@ -9,9 +9,9 @@ function deleteCategory() {
 	if (text_area.value) {
 		let	category = JSON.parse(text_area.value);
 		let category_list = JSON.parse(localStorage.getItem("category_names"));
-		category_list.splice(category_list.indexOf(category.name), 1);
+		category_list.splice(category_list.indexOf(category.category_name), 1);
 		localStorage.setItem("category_names", JSON.stringify(category_list));
-		localStorage.removeItem(`category_${category_list}`);
+		localStorage.removeItem(`category_${category.category_name}`);
 
 		if (category.category_name != "") {
 			addNotification(`Deleted category ${category.category_name}`, 3000);
