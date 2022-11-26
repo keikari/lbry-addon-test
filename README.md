@@ -65,13 +65,3 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/156902637-918f4bf8-97be-4588-bf68-a13cadd4b822.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902638-5b21f1b7-4382-4365-a766-bbd248a72801.png">  
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/156902640-854e41f1-9394-4676-9ac8-304949320bd9.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902642-bcce20a8-787a-4291-b530-90e7d71e9a09.png">  
 </hr>  
-  
-
-=====================OLDER================================   
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/156160525-1a388886-8ec7-4120-958f-46563675cf36.png">  
-Old  
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859542-061f7b08-ac08-4aef-ba07-2e70af60e0d8.png">
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859544-ca4138da-f610-476c-a819-ff6368a1058e.png">  
-<img width="500px" src="https://user-images.githubusercontent.com/34790748/155859545-07a1f6e6-ebab-4a8b-82a5-9eb69ac1b1db.png">
-
-
