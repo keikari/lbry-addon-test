@@ -25,6 +25,57 @@ function loadCategory() {
 		fillFormFields(category);
 	}
 }
+
+function getTimeParamAndType(category_params) {
+	let time_params = ["release_time", "timestamp", "creation_timestamp"];
+	for (let i = 0; i < time_params.length; i++) {
+		let time_param = time_params[i]
+		if (category_params[`relative_${time_param}`]) {
+			return {time_param: time_param, time_type: "relative_time"};
+		} else if (category_params[time_param]) {
+			return {time_param: time_param, time_type: "unix_time"};
+		}
+	}
+}
+
+function openTimeInputField(time_type, time_param) {
+	let time_input_toggles = document.querySelectorAll(".time_span_toggle");
+	time_input_toggles.forEach((toggle) => {
+		let toggle_time_param = toggle.parentElement.id;
+		let toggle_time_type = toggle.getAttribute("time_type");
+		if (time_param == toggle_time_param && time_type == toggle_time_type) {
+			toggle.click();
+		}
+	});
+}
+function handleTimeInputField(category_params) {
+	let time_type_and_param = getTimeParamAndType(category_params);
+	let time_type = time_type_and_param.time_type;
+	let time_param = time_type_and_param.time_param;
+	openTimeInputField(time_type, time_param);
+
+	let time_input_div = document.querySelector(`.time_input.${time_param}`);
+	console.log(time_type);
+	if (time_type === "unix_time") {
+		let time_input = time_input_div.querySelector("input");
+		time_input.value = category_params[time_param];
+	} else if (time_type === "relative_time") {
+		let relative_time_params = category_params[`relative_${time_param}`];
+		let time_detail_selectors = time_input_div.querySelectorAll("select");
+		let time_amount_input = time_input_div.querySelector("input");
+		time_amount_input.value = relative_time_params.amount;
+		time_detail_selectors.forEach((selector) => {
+			Object.keys(relative_time_params).forEach( (key) => {
+				if (selector.classList.contains(`time_${key}`)) {
+					selector.value = relative_time_params[key];
+				}
+			});
+		});
+	}
+	let time_set_btn = time_input_div.querySelector("button");
+	time_set_btn.click();
+}
+
 function fillFormFields(category) {
 	console.log(category);
 	category_name = category.category_name;
@@ -44,6 +95,9 @@ function fillFormFields(category) {
 			input.checked = false;
 	});
 	category_search_params = {};
+
+	// Only able to handle one time type (release, creation, last-updated)
+	handleTimeInputField(category_params);
 
 	Object.keys(category_params).forEach( (key) => {
 		console.log(key + ": " + category_params[key]);
@@ -468,6 +522,7 @@ function createTimeInput(time_type, time_param) {
 
 		let time_direction_input = document.createElement("select");
 		let time_direction_options = ["over", "under"];
+		time_direction_input.classList.add("time_direction");
 		time_direction_options.forEach(time_option => {
 			let option = document.createElement("option");
 			option.value = time_option;
@@ -477,10 +532,11 @@ function createTimeInput(time_type, time_param) {
 		
 		let time_amount_input = document.createElement("input");
 		time_amount_input.type = "text";
-		time_amount_input.classList.add("time_amount_input");
+		time_amount_input.classList.add("time_amount");
 		
 		let time_type_input = document.createElement("select");
 		let time_options = ["hours", "days", "months", "years"];
+		time_type_input.classList.add("time_type");
 		time_options.forEach(time_option => {
 			let option = document.createElement("option");
 			option.value = time_option;
@@ -490,6 +546,7 @@ function createTimeInput(time_type, time_param) {
 
 		let time_side_input = document.createElement("select");
 		let time_side_options = ["ago", "to release"];
+		time_side_input.classList.add("time_side");
 		time_side_options.forEach(time_option => {
 			let option = document.createElement("option");
 			option.value = time_option;
@@ -525,6 +582,7 @@ function createTimeInput(time_type, time_param) {
 
 		let time_direction_input = document.createElement("select");
 		let time_direction_options = ["since", "before"];
+		time_direction_input.classList.add("time_direction");
 		time_direction_options.forEach(time_option => {
 			let option = document.createElement("option");
 			option.value = time_option;
