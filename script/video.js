@@ -59,7 +59,7 @@ function createFollowButton(response, obj) {
 	let claim = obj.claim;
 	let options_div = obj.div;
 	let button = document.createElement("button");
-	let subscriptions = response.result.local.value.subscriptions;
+	let subscriptions = response.result?.local.value.subscriptions || [];
 	let channelURL = claim.signing_channel.permanent_url;
 	let isFollowing = subscriptions.includes(channelURL);
 	button.innerText = (isFollowing ? "Unfollow" : "Follow");
@@ -67,7 +67,7 @@ function createFollowButton(response, obj) {
 
 	button.onclick = () => { 
 		doACall("preference_get", {key: "local"}, (response, channelURL) => {
-			let local = response.result.local;
+			let local = response.result?.local || {"value": {"subscriptions": []}};
 			let subscriptions = local.value.subscriptions;
 			isFollowing = subscriptions.includes(channelURL);
 			if ( isFollowing ) {
