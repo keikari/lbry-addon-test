@@ -36,6 +36,7 @@ function getTimeParamAndType(category_params) {
 			return {time_param: time_param, time_type: "unix_time"};
 		}
 	}
+	return null;
 }
 
 function openTimeInputField(time_type, time_param) {
@@ -50,6 +51,9 @@ function openTimeInputField(time_type, time_param) {
 }
 function handleTimeInputField(category_params) {
 	let time_type_and_param = getTimeParamAndType(category_params);
+	if (time_type_and_param === null) {
+		return;
+	}
 	let time_type = time_type_and_param.time_type;
 	let time_param = time_type_and_param.time_param;
 	openTimeInputField(time_type, time_param);
@@ -79,7 +83,7 @@ function handleTimeInputField(category_params) {
 function fillFormFields(category) {
 	console.log(category);
 	category_name = category.category_name;
-	category_params = category.category;
+	category_params = category.category ? category.category : category;
 	// Clear old entries
 	let option_previews = document.querySelectorAll(".preview_option");
 	option_previews.forEach( (preview) => {
