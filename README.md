@@ -54,6 +54,7 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 </hr>  
 
 <hr>
+
 Other projects used in this:  
 JSONViewer https://github.com/LorDOniX/json-viewer  
 - create by Roman Makudera 2016 (c)  
@@ -66,5 +67,3 @@ drawdown https://github.com/adamvleggett/drawdown
 DOMPurify https://github.com/cure53/DOMPurify  
 - Copyright 2015 Mario Heiderich  
 - [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 
-
-<hr> 
