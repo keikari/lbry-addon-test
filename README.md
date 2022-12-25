@@ -1,21 +1,8 @@
 
 # lbry-addon-test  
-  
-Other projects used in this:  
-JSONViewer https://github.com/LorDOniX/json-viewer  
-- create by Roman Makudera 2016 (c)  
-- MIT licence, code is free to use  
-	
-drawdown https://github.com/adamvleggett/drawdown  
-- Copyright (c) 2016 Adam Leggett
-- [MIT License](https://github.com/adamvleggett/drawdown/blob/master/LICENSE)
 
-DOMPurify https://github.com/cure53/DOMPurify  
-- Copyright 2015 Mario Heiderich  
-- [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 
+Wepage version that may or may not be up http://172.105.86.236/lbry-ui/lbry-addon-test/main.html  
 
-<hr> 
- 
 ### This is code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
 Very beta, ~~possibly abandoned project(Done quite some time ago, but messy approach I had in this, made me lose interest at the time(css is difficult, and also the other stuff). This repo is just to have some copy of this in somewhere.)~~   
@@ -65,3 +52,19 @@ Clicking the icon for add-on also should open new tab to add-on page(may not wor
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/156902637-918f4bf8-97be-4588-bf68-a13cadd4b822.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902638-5b21f1b7-4382-4365-a766-bbd248a72801.png">  
 <img width="500px" src="https://user-images.githubusercontent.com/34790748/156902640-854e41f1-9394-4676-9ac8-304949320bd9.png"><img width="500px" src="https://user-images.githubusercontent.com/34790748/156902642-bcce20a8-787a-4291-b530-90e7d71e9a09.png">  
 </hr>  
+
+<hr>
+Other projects used in this:  
+JSONViewer https://github.com/LorDOniX/json-viewer  
+- create by Roman Makudera 2016 (c)  
+- MIT licence, code is free to use  
+	
+drawdown https://github.com/adamvleggett/drawdown  
+- Copyright (c) 2016 Adam Leggett
+- [MIT License](https://github.com/adamvleggett/drawdown/blob/master/LICENSE)
+
+DOMPurify https://github.com/cure53/DOMPurify  
+- Copyright 2015 Mario Heiderich  
+- [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 
+
+<hr> 
