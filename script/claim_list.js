@@ -158,10 +158,11 @@ function createStreamClaimPreview(claim, channel_claim, isReposted, repost_claim
 	title.innerText = claim.value.title ? claim.value.title : claim.name;
 	let channel_name = null;
 	// Don't print channel name on channel's page
-	if (!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) {
+	if (claim.signing_channel?.claim_id != channel_claim?.claim_id ||
+			claim.signing_channel?.channel_id != channel_claim?.claim_id ) {
 		channel_name = document.createElement("h4");
 		channel_name.classList.add("channel_name");
-		channel_name.innerText = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : "Unknown") : "Unknown");
+		channel_name.innerText = (claim.signing_channel ? (claim.signing_channel.name ? claim.signing_channel.name : claim.signing_channel.channel_id) : "Unknown");
 	}
 
 	// Release time
@@ -351,8 +352,6 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		let is_filtered = false;
 		if (itemInArray(claim.txid, filtered_txids) || (claim.signing_channel && claim.signing_channel.txid ? itemInArray(claim.signing_channel.txid, filtered_txids) : false)) {
 			is_filtered = true
-			//console.log(`Blocked: ${claim.txid}`);
-			//return;
 		}
 
 		// Add mature class
@@ -372,9 +371,10 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		else if (is_mature) {
 			li.classList.add("mature_item");
 		}
-		if (isReposted)
+		if (isReposted) {
 			li.classList.add("repost");
-		if (!(!channel_claim || !claim.signing_channel || claim.signing_channel.claim_id != channel_claim.claim_id) || claim.is_channel_signature_valid === false) {
+		}
+		if (!claim.signing_channel ) {
 			li.classList.add("no_channel");
 		} else if (!claim.value_type != "channel"){
 			li.classList.add("has_channel");
@@ -402,10 +402,20 @@ function addClaimsToList(obj, channel_claim, search_params) {
 		const hr = document.createElement("hr");
 		hr_div.classList.add("hr_div");
 		hr_div.addEventListener("click", () => {
-			let json_viewer = ul.querySelector(".json_viewer");
-			if (!json_viewer) {
+			let json_viewers = ul.querySelectorAll(".json_viewer");
+			let was_json_viewer_closed = false;
+			for (let i = 0; i < json_viewers.length; i++) {
+				let json_viewer = json_viewers[i];
+				if (json_viewers[i].classList.contains(`.${claim.name}${claim.claim_id}`)) {
+					json_viewers[i].remove();
+					was_json_viewer_closed = true;
+				}
+			}
+
+			if (!was_json_viewer_closed) {
 				let json_div = document.createElement("div");
 				json_div.classList.add("json_viewer");
+				json_div.classList.add(`.${claim.name}${claim.claim_id}`);
 				json_viewer = new JSONViewer();
 				json_div.appendChild(json_viewer.getContainer());
 				ul.insertBefore(json_div, hr_div.nextSibling);
@@ -413,8 +423,6 @@ function addClaimsToList(obj, channel_claim, search_params) {
 					json_viewer.showJSON(repost_claim, -1, 1);
 				else
 					json_viewer.showJSON(claim, -1, 1);
-			} else {
-				json_viewer.remove();
 			}
 		});
 		hr_div.append(hr);
