@@ -25,15 +25,20 @@ hr {
 	background: #1F1F1F;
 }
 
-
+.has_channel.collection .preview_details_div{
+	top: 24px;
+}
 .has_channel .preview_details_div {
 	top: 44px;
 }
 .no_channel .preview_details_div {
-	top: 66px;
+	top: 70px;
 }
 .no_channel.repost .preview_details_div {
 	top: 52px;
+}
+.no_channel.collection .preview_details_div{
+	top: 48px;
 }
 
 
