@@ -1,7 +1,7 @@
 
 # lbry-addon-test  
 
-Webpage version that may or may not be up http://172.105.86.236/lbry-ui/lbry-addon-test/main.html  
+Webpage version that may or may not be up http://172.105.86.236/lbry-ui/lbry-addon-test/main.html?lbryurl=lbry://@bcpov
 
 ### This is code for a simple GUI in Firefox that uses local [lbrynet](https://github.com/lbryio/lbry-sdk) daemon to interact with LBRY.   
 
