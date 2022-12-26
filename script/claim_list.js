@@ -382,6 +382,11 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 		window.onscroll = getNextResultPage;
 	});
 }
+
+function sanitizeClaimJSON(claim) {
+	return JSON.parse(cleanHTML(JSON.stringify(claim))):
+}
+
 // Channel claim is optional
 function addClaimsToList(obj, search_params) {
 
@@ -389,18 +394,18 @@ function addClaimsToList(obj, search_params) {
 	const ul = document.querySelector("#claim_list");
 
 	obj.result["items"].forEach((claim) => {
-		// Sanitize data in "claim", just to be safe.
-		claim = JSON.parse(cleanHTML(JSON.stringify(claim)));
+		claim = sanitizeClaimJSON(claim);
 
 		// If using channel filters and signature is invalid, don't show publishes
 		if (!search_params.show_invalid_signatures && claim.signing_channel && (search_params.channel_ids || search_params.channel) && !claim.is_channel_signature_valid) {
 			return;
 		}
-		let isReposted = false;
+
+		let is_reposted = false;
 		if (claim.value_type == "repost") {
 			var repost_claim = claim;
 			claim = claim.reposted_claim;
-			isReposted = true;
+			is_reposted = true;
 			if(!claim)
 				return;
 		}
@@ -428,7 +433,7 @@ function addClaimsToList(obj, search_params) {
 		else if (is_mature) {
 			li.classList.add("mature_item");
 		}
-		if (isReposted) {
+		if (is_reposted) {
 			li.classList.add("repost");
 		}
 		if (!claim.signing_channel && claim.value_type !== "channel" ) {
@@ -443,7 +448,7 @@ function addClaimsToList(obj, search_params) {
 
 
 		const a = document.createElement("a");
-		const preview_div = createClaimPreview(claim, isReposted, repost_claim);
+		const preview_div = createClaimPreview(claim, is_reposted, repost_claim);
 		if (claim.value_type == "stream") {
 			a.href = "video.html?url="+claim.permanent_url;
 		} else if (claim.value_type == "channel") {
