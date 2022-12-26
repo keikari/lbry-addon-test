@@ -219,6 +219,17 @@ function hidePopUp() {
 
 }
 
+function convertAmountToDewies(amount) {
+	let dewies = 0;
+	let first_char = amount.substr(0,1);
+	if (first_char * 1)
+		dewies = (amount * 100000000).toString();
+	else
+		dewies = first_char + (amount.substr(1) * 100000000).toString();
+
+	return dewies;
+}
+
 function getText(e, elem) {
 	if (e.keyCode === 13) {
 		let text = elem.value;
@@ -226,25 +237,20 @@ function getText(e, elem) {
 		if (text) {
 			// Convert from LBC to 1/100,000,000 LBC
 			if (elem.classList.contains("is_amount")) {
-				let first_char = elem.value.substr(0,1);
-				if (first_char * 1 ) 
-					text = (elem.value * 100000000).toString();
-				else
-					text = first_char + (elem.value.substr(1) * 100000000).toString();
+				text = convertAmountToDewies(text);
 			}
 			category_search_params[elem.id] = text;
-			text = elem.value;
 			let preview_text = document.createElement("label");
 			preview_text.classList.add("preview_option");
 			preview_text.innerText = text + " X";
 			preview_text.onclick = () => {
 				category_search_params[elem.id] = null;
 				preview_text.remove();
-				elem.hidden = false;
+				elem.style.visibility = "";
+				elem.value = "";
 				elem.focus();
 			};
-			console.log(elem);
-			elem.hidden = true;
+			elem.style.visibility = "hidden";
 			elem.parentElement.insertBefore(preview_text, elem); 
 		}
 	}
@@ -414,6 +420,9 @@ function getTextArray(e, elem) {
 		let text = elem.value;
 		let search_param = elem.id;
 		if (text) {
+			if (elem.classList.contains("is_amount")) {
+				text = convertAmountToDewies(text);
+			}
 			let array_items = category_search_params[search_param] ? category_search_params[search_param] : [];
 			if (!array_items.includes(text)) {
 				array_items.push(text);

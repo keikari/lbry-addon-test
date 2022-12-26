@@ -384,7 +384,7 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 }
 
 function sanitizeClaimJSON(claim) {
-	return JSON.parse(cleanHTML(JSON.stringify(claim))):
+	return JSON.parse(cleanHTML(JSON.stringify(claim)));
 }
 
 // Channel claim is optional
