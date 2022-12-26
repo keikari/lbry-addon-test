@@ -247,10 +247,12 @@ function getText(e, elem) {
 				category_search_params[elem.id] = null;
 				preview_text.remove();
 				elem.style.visibility = "";
+				elem.style.height = "";
 				elem.value = "";
 				elem.focus();
 			};
 			elem.style.visibility = "hidden";
+			elem.style.height = 0;
 			elem.parentElement.insertBefore(preview_text, elem); 
 		}
 	}
