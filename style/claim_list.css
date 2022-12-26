@@ -79,6 +79,10 @@ hr {
 .title, .channel_name, .release_time, .uploads_count, .claim_count {
 	margin: 5px 10px;
 }
+.channel_name {
+	width: fit-content;
+	display: inline;
+}
 .staked_text, .price_text {
 	float: right;
 	margin-right: 5px;
