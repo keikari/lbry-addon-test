@@ -83,6 +83,9 @@ hr {
 	width: fit-content;
 	display: inline;
 }
+.no_channel > a > div > .preview_info_div > .channel_name {
+	display: block;
+}
 .staked_text, .price_text {
 	float: right;
 	margin-right: 5px;
