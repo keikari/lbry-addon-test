@@ -248,7 +248,6 @@ function getText(e, elem) {
 				preview_text.remove();
 				elem.style.visibility = "";
 				elem.style.height = "";
-				elem.value = "";
 				elem.focus();
 			};
 			elem.style.visibility = "hidden";
