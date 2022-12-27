@@ -76,10 +76,10 @@ function search_main() {
 	});
 
 	let search_params = {
-		text: search_term,
+		text: search_term.replaceAll(" ","+"),
 		claim_type: "stream",
 		has_source: true,
-		order_by: "trending_score",
+		//order_by: "trending_score",
 		use_default_not_tags: true,
 	}
 
