@@ -325,6 +325,9 @@ function sendSearchParams(_search_params, channel_claim, is_temp_category = fals
 	}
 	// Handle relative time params
 	Object.keys(search_params).forEach((key) => {
+		if (search_params[key] === null) {
+			delete search_params[key];
+		}
 		if (key.match("relative")) {
 			let value = search_params[key];
 			let date = new Date();
